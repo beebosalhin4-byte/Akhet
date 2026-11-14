@@ -122,8 +122,9 @@ const hzg=(b,a,p)=>Array.from({length:360},(_,i)=>{const t=i*D;return Math.max(0
 const PH={mal:hzg(1.2,1.6,0),hay:hzg(2.2,2.4,1),nob:hzg(1.8,2,2),con:hzg(.9,1.2,3),sha:hzg(1.6,1.8,4),cha:hzg(.5,.8,5),a15:hzg(1,1.5,6),a11:Array(360).fill(0)};
 /* ---- LOLA terrain: loaded once, then a skyline is computed for ANY lat/lon in the browser (~20 ms) ---- */
 const RM=1737400;let DEM={},HZC={};
-async function ld(u){const r=await fetch(u);if(!r.ok)throw 0;return new Int16Array(await new Response(r.body.pipeThrough(new DecompressionStream('gzip'))).arrayBuffer())}
-fetch('data/dem_meta.json').then(r=>r.json()).then(async m=>{DEM={...m};DEM.g=await ld('data/dem_global.bin.gz');try{DEM.s=await ld('data/dem_south.bin.gz')}catch(e){}HZC={};all()}).catch(()=>{});
+async function ld(u){const r=await fetch(u);if(!r.ok)throw new Error(u+' not found ('+r.status+')');let b=new Uint8Array(await r.arrayBuffer());if(b[0]===31&&b[1]===139)b=new Uint8Array(await new Response(new Blob([b]).stream().pipeThrough(new DecompressionStream('gzip'))).arrayBuffer());return new Int16Array(b.buffer,b.byteOffset,b.byteLength>>1)}
+fetch('data/dem_meta.json').then(r=>r.json()).then(async m=>{DEM={...m};DEM.g=await ld('data/dem_global.bin.gz');if(DEM.g.length!==DEM.gw*DEM.gh)throw new Error('global map has '+DEM.g.length+' values, expected '+DEM.gw*DEM.gh+' (use LDEM_16.IMG)');
+ try{DEM.s=await ld('data/dem_south.bin.gz');if(DEM.s.length!==DEM.pn*DEM.pn){const q=DEM.s.length;DEM.s=null;DEM.err='polar map size does not match n='+DEM.pn+' ('+q+' values)'}}catch(e){DEM.err=String(e.message||e)}HZC={};all()}).catch(e=>{DEM={err:String(e.message||e)};all()});
 function bil(a,w,h,x,y,wrap){const x0=Math.floor(x),y0=Math.floor(y),fx=x-x0,fy=y-y0,X=i=>wrap?(i%w+w)%w:Math.max(0,Math.min(w-1,i)),Y=j=>Math.max(0,Math.min(h-1,j));
 return a[Y(y0)*w+X(x0)]*(1-fx)*(1-fy)+a[Y(y0)*w+X(x0+1)]*fx*(1-fy)+a[Y(y0+1)*w+X(x0)]*(1-fx)*fy+a[Y(y0+1)*w+X(x0+1)]*fx*fy}
 function dhgt(la,lo){if(DEM.s&&la<-80*D){const r=2*RM*Math.tan((Math.PI/2+la)/2);return .5*bil(DEM.s,DEM.pn,DEM.pn,(DEM.pn-1)/2+r*Math.sin(lo)/DEM.pm,(DEM.pn-1)/2-r*Math.cos(lo)/DEM.pm)}
@@ -302,7 +303,7 @@ function render(k){const id=$('s'+k).value,S=SITES.find(s=>s.id===id),cu=id==='c
  const real=!!DEM.g,hz=hzFor(id,lat,lon),key=[id,lat,lon,t0,real].join();
  if(!SER[k]||SER[k].key!==key){const f=frames(t0),o={key,hz,t0,sE:[],sA:[],eE:[],eA:[],sO:[],eO:[],f};for(const x of f){const a=azel(x.s,lat,lon),b=azel(x.e,lat,lon);o.sE.push(a.el);o.sA.push(a.az);o.eE.push(b.el);o.eA.push(b.az);o.sO.push(a.el+x.sr>mask(hz,a.az));o.eO.push(b.el>mask(hz,b.az))}SER[k]=o}
  const o=SER[k],t=new Date(t0+i*36e5);$('t'+k).textContent=t.toISOString().slice(0,16).replace('T',' ')+' UTC (Earth day '+(i/24).toFixed(1)+')';
- $('b'+k).className='badge '+(real?'real':'fake');$('b'+k).textContent=real?'Terrain: real LOLA skyline'+(DEM.s?'':' (coarse, no polar map)'):id==='cus'?'Terrain: flat horizon assumed (terrain files not loaded)':'Terrain: placeholder (terrain files not loaded)';
+ $('b'+k).className='badge '+(real?'real':'fake');$('b'+k).textContent=real?'Terrain: real LOLA skyline'+(DEM.s?'':' (coarse, '+(DEM.err||'no polar map')+')'):id==='cus'?'Terrain: flat horizon assumed (terrain not loaded'+(DEM.err?': '+DEM.err:'')+')':'Terrain: placeholder (terrain not loaded'+(DEM.err?': '+DEM.err:'')+')';
  const sOn=o.sO[i],eOn=o.eO[i],pw=sOn?Math.sin(Math.max(0,o.sE[i])*D)*100:0;
  $('e'+k).innerHTML=`<div class="e1 sunEye">${WED}<b>${sOn?'Sun eye open':'Sun eye closed'}</b><small>${sOn?'Power: '+pw.toFixed(1)+'% of full strength':'In shadow'}</small></div><div class="e1 moonEye">${WED}<b>${eOn?'Moon eye open':'Moon eye closed'}</b><small>${eOn?'Can talk to Earth':'Earth hidden'}</small></div>`;
  const[a,b]=$('e'+k).querySelectorAll('.eye');a.classList.toggle('open',sOn);b.classList.toggle('open',eOn);
