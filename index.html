@@ -1,280 +1,129 @@
-<!DOCTYPE html>
-<html lang="en"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Two Eyes of Horus: Lunar Landing Site Navigator (Akhet)</title>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Two Eyes of Horus: Lunar Landing Site Navigator</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 42'%3E%3Cpath d='M2 38 L16 10 Q40 34 64 10 L78 38 Z' fill='none' stroke='%23ffc94a' stroke-width='4'/%3E%3Ccircle cx='40' cy='14' r='7' fill='%23ffc94a'/%3E%3C/svg%3E">
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;600&family=Sora:wght@300;400;600;700&family=Syncopate:wght@400;700&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/astronomy-engine@2.1.19/astronomy.browser.min.js"></script>
 <style>
-:root{--bg:#05070d;--panel:rgba(10,14,24,.62);--ink:#e9ecf3;--mut:#8d97ab;--line:rgba(255,255,255,.12);--sun:#ffc94a;--earth:#5aa2ff;--ok:#4fd08a;--bad:#ff6b5e;--dark:#161b27;color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
-body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.5 Sora,system-ui,sans-serif}
-.hero{position:relative;height:100svh;min-height:560px;overflow:hidden}
-#pov{position:absolute;inset:0;width:100%;height:100%;cursor:grab;touch-action:none}#pov:active{cursor:grabbing}
-.glass{background:var(--panel);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid var(--line);border-radius:14px}
-.brand{position:absolute;left:18px;top:18px;padding:14px 16px;max-width:330px}
-.brand h1{margin:0;font:400 19px/1.2 Sora,sans-serif;letter-spacing:.04em;display:flex;align-items:center;gap:10px}
-.brand p{margin:6px 0 10px;color:var(--mut);font-size:13px}
-select,input,button{font:13px Sora,system-ui,sans-serif;color:var(--ink);background:rgba(255,255,255,.07);border:1px solid var(--line);border-radius:8px;padding:7px 10px}
-select option{background:#10151f}button{cursor:pointer}button:hover{background:rgba(255,255,255,.14)}
-button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--earth);outline-offset:2px}
-.read{position:absolute;right:18px;top:18px;padding:14px 16px;min-width:280px}
-.read .r{display:flex;justify-content:space-between;gap:16px;padding:4px 0;font-variant-numeric:tabular-nums}.read .r span{color:var(--mut)}
-.chip{display:inline-block;padding:2px 10px;border-radius:99px;font-weight:600;font-size:12px}
-.on{background:rgba(79,208,138,.18);color:var(--ok)}.off{background:rgba(255,107,94,.18);color:var(--bad)}
-.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:7px}
-#globe{position:absolute;right:18px;top:290px;width:190px;height:190px;border-radius:14px;border:1px solid var(--line);background:rgba(5,7,13,.5)}
-.ctl{position:absolute;left:18px;right:18px;bottom:calc(18px + env(safe-area-inset-bottom,0px));padding:12px 14px;display:flex;flex-wrap:wrap;gap:10px;align-items:center}
-.ctl input[type=range]{flex:1;min-width:180px;padding:0;accent-color:var(--sun)}
-#tlabel{font-variant-numeric:tabular-nums;min-width:150px;color:var(--ink)}
-.hint{position:absolute;left:0;right:0;bottom:86px;text-align:center;color:var(--mut);font-size:12px;pointer-events:none}
-main{max-width:1060px;margin:auto;padding:48px 18px 70px}
-h2{font:600 22px Sora,sans-serif;margin:34px 0 6px}.sub{color:var(--mut);margin:0 0 16px;max-width:70ch}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
-.card{padding:14px 16px}.card h3{margin:0 0 8px;font:600 15px Sora,sans-serif}.card.sel{border-color:var(--sun)}
-.m{display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--line)}.m b{font-variant-numeric:tabular-nums}
-.note{font-size:12px;color:var(--mut);margin-top:6px}.plain{margin:0;font-size:14px}
-.row{display:flex;flex-wrap:wrap;gap:10px;align-items:end;margin:8px 0}.row label{display:flex;flex-direction:column;gap:3px;color:var(--mut);font-size:12px}
-.wrap{overflow-x:auto}canvas{display:block;max-width:100%}
-.warn{border-left:3px solid var(--sun);padding:10px 14px;margin:20px 0;color:var(--mut);font-size:13px;background:rgba(255,201,74,.06);border-radius:0 8px 8px 0}
-.intro-ui{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;text-align:center;padding:0 6vw 7vh;pointer-events:none;transition:opacity 1.3s ease,transform 1.8s ease;background:linear-gradient(180deg,rgba(5,7,13,0) 60%,rgba(5,7,13,.4) 100%)}
-.intro-ui h1{font:400 clamp(22px,4.2vw,64px)/1.1 Syncopate,sans-serif;letter-spacing:.14em;margin:14px 0 0;text-transform:uppercase;text-shadow:0 4px 50px rgba(0,0,0,.6)}
-.intro-ui p{margin:16px 0 28px;max-width:46ch;color:#c4cbdb;font-weight:300;font-size:clamp(14px,1.6vw,18px)}
-#enter{pointer-events:auto;padding:14px 44px;font-size:15px;letter-spacing:.16em;border-radius:99px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.5);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
-#enter:hover{background:#fff;color:#05070d}
-body:not(.intro) .intro-ui{opacity:0;transform:translateY(-24px)}body:not(.intro) #enter{pointer-events:none}
-.brand,.read,#globe,.ctl,.hint{transition:opacity 1.2s ease 1.6s}
-body.intro .brand,body.intro .read,body.intro #globe,body.intro .ctl,body.intro .hint{opacity:0;pointer-events:none}
-body.intro main{display:none}
-body,button,select,input,h2,h3,.brand h1,.intro-ui p{font-family:Outfit,system-ui,sans-serif!important}
-.tag{position:absolute;pointer-events:none;color:#e9ecf3;font:300 14px/1.35 Outfit,sans-serif;letter-spacing:.04em;transition:opacity 1s ease;text-shadow:0 1px 12px rgba(0,0,0,.85);border-left:1px solid rgba(255,255,255,.55);padding-left:10px}.tag b{display:block;font-weight:600;font-size:16px;letter-spacing:.16em}.tag small{color:#b4bdd0;font-size:13px}
-body:not(.intro) .tag{opacity:0}
-[data-glyph]{color:var(--sun);display:inline-flex;align-items:center}[data-glyph] svg{width:28px;height:15px}.biglyph svg{width:92px;height:48px}.biglyph{filter:drop-shadow(0 0 18px rgba(255,201,74,.55))}
-#enter{display:inline-flex;align-items:center;gap:12px}
-.eye{width:64px;height:40px;overflow:visible;opacity:.45;transition:opacity .4s,filter .4s;flex:none}.eye *{fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}.eye .almond{fill:rgba(255,255,255,.05)}.eye .pupil{fill:currentColor;stroke:none}.eye .glint{fill:#fff;stroke:none}
-.eye .lid{transform-box:fill-box;transform-origin:center;transform:scaleY(.07);transition:transform .45s cubic-bezier(.3,.7,.2,1)}.eye.open{opacity:1;filter:drop-shadow(0 0 6px currentColor)}.eye.open .lid{transform:scaleY(1)}
-.sunEye{color:var(--sun)}.moonEye{color:var(--earth)}
-.eyeblk{display:flex;align-items:center;gap:14px;padding:8px 0;border-bottom:1px solid var(--line)}.eyeblk>div{color:var(--ink);min-width:0}.eyeblk h4{margin:0;font:600 14px Outfit,sans-serif}.eyeblk em{display:block;font-style:normal;color:var(--mut);font-size:12px}.eyeblk small{color:var(--mut);font-size:12px}.st{display:block;font-weight:600;font-size:13px;margin:3px 0 1px}.st.go{color:var(--ok)}.st.stop{color:var(--bad)}
-.akhet{display:flex;align-items:center;gap:8px;margin-top:8px;padding:6px 10px;border-radius:8px;font-size:12px;color:var(--sun);opacity:0;border:1px solid transparent;transition:opacity .4s}.akhet.on{opacity:1;border-color:rgba(255,201,74,.5);background:rgba(255,201,74,.08);animation:pulse 1.8s ease-in-out infinite}@keyframes pulse{50%{box-shadow:0 0 18px rgba(255,201,74,.45)}}@media(prefers-reduced-motion:reduce){.akhet.on{animation:none}}
-.eyes2{display:flex;gap:10px;margin:4px 0 10px}.e1{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 4px;border-radius:10px;border:1px solid var(--line)}.e1 b{font-size:22px;font-variant-numeric:tabular-nums}.e1 small{color:var(--mut);font-size:12px;text-align:center}.e1 .eye{width:56px;height:34px}
-@media(max-width:700px){#globe{display:none}.read{top:auto;bottom:150px;right:18px;left:18px}.brand{right:18px;max-width:none}}
-.launch-btn { display: inline-block; margin-top: 10px; background-color: var(--sun); color: #05070d; padding: 8px 14px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 13px; text-align: center; transition: opacity 0.2s; }
-.launch-btn:hover { opacity: 0.9; }
-</style></head><body class="intro">
-<section class="hero">
-<canvas id="pov"></canvas>
-<div class="intro-ui"><div class="biglyph" data-glyph></div><h1>Two Eyes of Horus</h1><p>Akhet: the horizon. At the Moon's south pole, sunlight and the line home rise and vanish behind the ridges. Find the landing site where both eyes stay open.</p><button id="enter"><span data-glyph></span>Enter</button></div>
-<div class="tag" id="tagE"><b>EARTH</b><small>384,400 km away</small></div><div class="tag" id="tagM" style="left:5vw;bottom:34vh"><b>THE MOON</b><small>South pole, 89.5°S</small></div>
-<div class="brand glass">
-  <h1><span data-glyph></span>Two Eyes of Horus</h1>
-  <p>Akhet, the horizon. Pick a south pole site and watch both eyes open and close.</p>
-  <select id="site" aria-label="Landing site"></select>
-  <a href="https://hnk6pqmezhjxcc7gv72ww2.streamlit.app" target="_blank" class="launch-btn">Launch Mission Planner 🚀</a>
-</div>
-<div class="read glass">
-<div class="eyeblk sunEye"><span data-eye></span><div><h4>Sun eye</h4><em>Solar power</em><b id="pwr" class="st">-</b><small>Sun elevation <span id="sunEl">-</span></small></div></div>
-<div class="eyeblk moonEye"><span data-eye></span><div><h4>Moon eye</h4><em>Line of sight home</em><b id="com" class="st">-</b><small>Earth elevation <span id="earEl">-</span></small></div></div>
-<div class="akhet" id="akhet"><span data-glyph></span>Akhet: the Sun is on the horizon</div></div>
-<canvas id="globe" width="190" height="190"></canvas>
-<div class="hint">Drag to look around. Sun and Earth are drawn 3× larger than real so you can see them.</div>
-<div class="ctl glass">
-<button id="play" aria-label="Play or pause">Play</button>
-<select id="spd" aria-label="Speed"><option value="3">3 h/s</option><option value="12" selected>12 h/s</option><option value="48">2 days/s</option></select>
-<input type="range" id="slider" min="0" max="0" value="0" aria-label="Time">
-<span id="tlabel"></span>
-<button id="lookS">Look at Sun</button><button id="lookE">Look at Earth</button>
-<button id="nextS">Next sunrise/sunset</button><button id="nextE">Next Earth gain/loss</button>
-</div></section>
-
+:root{--bg:#0b0907;--pan:#15110b;--ink:#f1e5c3;--mut:#a89a78;--gold:#e8b84a;--lap:#5aa2ff;--tq:#3fc1b0;--ok:#4fd08a;--bad:#e4624f;--line:rgba(232,184,74,.28);color-scheme:dark}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(1200px 500px at 50% -10%,#2a1d08,var(--bg));color:var(--ink);font:15px/1.5 Outfit,system-ui,sans-serif;padding:env(safe-area-inset-top,0) 0 env(safe-area-inset-bottom,0)}
+.band{height:10px;background:repeating-linear-gradient(90deg,var(--gold) 0 14px,transparent 14px 20px,var(--lap) 20px 34px,transparent 34px 40px);opacity:.8}
+header{max-width:1200px;margin:auto;padding:20px 16px 4px;display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+header h1{margin:0;font-weight:600;font-size:clamp(20px,3.2vw,32px);letter-spacing:.08em;color:var(--gold)}header p{margin:2px 0 0;color:var(--mut);max-width:70ch}
+.glyph svg{width:64px;height:34px;color:var(--gold);filter:drop-shadow(0 0 10px rgba(232,184,74,.5))}
+main{max-width:1200px;margin:auto;padding:8px 16px 50px}
+.bar,.card{background:var(--pan);border:1px solid var(--line);border-radius:14px;padding:12px 14px}
+.bar{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin:10px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:14px}
+select,input,button{font:inherit;color:var(--ink);background:#241b0e;border:1px solid var(--line);border-radius:8px;padding:6px 9px}
+button{cursor:pointer}button:hover{background:#3a2b12}input[type=range]{width:100%;accent-color:var(--gold);padding:0}
+:focus-visible{outline:2px solid var(--lap);outline-offset:2px}
+label{display:block;color:var(--mut);font-size:13px;margin-top:8px}.card h2{margin:0 0 6px;font-size:18px;color:var(--gold)}
+.cust{display:flex;gap:8px}.cust input{width:100%}
+.badge{display:inline-block;font-size:12px;padding:1px 9px;border-radius:99px;margin:6px 0}.real{background:rgba(79,208,138,.15);color:var(--ok)}.fake{background:rgba(228,98,79,.15);color:var(--bad)}
+.eyes{display:flex;gap:10px;margin:8px 0}.e1{flex:1;text-align:center;border:1px solid var(--line);border-radius:10px;padding:6px}.e1 b{display:block}.e1 small{color:var(--mut)}
+.eye{width:54px;height:32px;opacity:.4}.eye *{fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round}.eye .pu{fill:currentColor;stroke:none}.eye.open{opacity:1;filter:drop-shadow(0 0 6px currentColor)}
+.s{color:var(--gold)}.m{color:var(--lap)}
+.row{display:flex;justify-content:space-between;gap:10px;padding:4px 0;border-bottom:1px solid var(--line)}.row b{font-variant-numeric:tabular-nums;text-align:right}
+canvas{width:100%;display:block;margin-top:10px;border-radius:8px;background:#0e0b07;border:1px solid var(--line)}
+.cap{color:var(--mut);font-size:12px;margin:8px 0 0}
+table{width:100%;border-collapse:collapse}td,th{padding:5px 8px;border-bottom:1px solid var(--line);text-align:right}th:first-child,td:first-child{text-align:left}
+details{margin:8px 0}summary{cursor:pointer;color:var(--gold)}details p{color:var(--mut);margin:6px 0}
+.warn{border-left:3px solid var(--gold);padding:8px 12px;color:var(--mut);font-size:13px;background:rgba(232,184,74,.06);margin-top:14px}
+</style></head><body><div class="band"></div>
+<header><span class="glyph" id="gl"></span><div><h1>TWO EYES OF HORUS</h1><p>Akhet is the horizon. Pick two places on the Moon, pick two moments, and see if the <b class="s">Sun eye</b> (power) and the <b class="m">Moon eye</b> (the line home to Earth) are open.</p></div></header>
 <main>
-<h2>Mission analysis</h2>
-<p class="sub">The same engine, summarised over the whole date range. Compare sites by power and communication, then pick your landing window.</p>
-<div class="row">
-<label>Start date<input type="date" id="start"></label>
-<label>Length (days)<input type="number" id="days" value="30" min="2" max="365" style="width:90px"></label>
-<label>Best window (days)<input type="number" id="win" value="7" min="1" max="60" style="width:90px"></label>
-<button id="go">Recompute</button><button id="mode">Switch to simple view</button></div>
-<div class="grid" id="cards"></div>
-<h2>Timeline</h2>
-<p class="sub"><span style="color:var(--sun)">Yellow</span> bars: Sun visible. <span style="color:var(--earth)">Blue</span> bars: Earth visible. Dark: blocked or below the horizon.</p>
-<div class="wrap"><canvas id="tl"></canvas></div>
-<div class="warn">Work in progress. Terrain horizons are placeholders until replaced with LOLA-derived masks (see <code>SITES</code> in the code), site coordinates are approximate, and results must be validated against NASA illumination data.</div>
-</main>
-
+<div class="bar"><label style="margin:0"><input type="checkbox" id="link"> Use the same date and moment for both sites</label>
+<button id="play">▶ Play</button><select id="spd" aria-label="Speed"><option value="2">2 h/s</option><option value="12" selected>12 h/s</option><option value="48">2 days/s</option></select>
+<button id="mode">Show expert numbers</button></div>
+<div class="grid" id="panels"></div>
+<div class="card" style="margin-top:14px"><h2>Side by side</h2><div id="cmp"></div></div>
+<div class="card" style="margin-top:14px"><h2>What do these words mean?</h2>
+<details open><summary>Sun elevation</summary><p>How high the Sun is above the horizon. 90° is straight up. At the Moon's south pole it never goes above about 1.5°, so sunlight arrives almost sideways and tall hills block it.</p></details>
+<details><summary>Horizon map</summary><p>The top picture shows what you would see standing there: the ground's skyline (the dark shape) all the way around, with the Sun and Earth. The Moon has no air, so there is no glow or bending of light: when something drops behind the skyline, it is simply gone.</p></details>
+<details><summary>Sunset and Earthset timers</summary><p>Hours or days until the Sun or Earth slips behind the skyline (or comes back). One Moon day lasts about 29.5 Earth days, so a sunset can mean a two-week night.</p></details>
+<details><summary>Power and communication</summary><p>Solar panels make power only while the Sun is up, and more when it is higher. A lander can talk straight to Earth only while Earth is above the skyline. Move the date by one day and watch how much changes.</p></details>
+<details><summary>Why does the Earth wobble?</summary><p>The Moon nods and swings a little as it orbits (called libration), so Earth moves slightly in the sky. The app includes this.</p></details></div>
+<div class="warn" id="note"></div>
+</main><div class="band"></div>
 <script>
-const D=Math.PI/180,$=id=>document.getElementById(id);
-const hzg=(b,a,p)=>Array.from({length:72},(_,i)=>{const t=i/72*2*Math.PI;return Math.max(0,b+a*(.5*Math.sin(3*t+p)+.3*Math.sin(7*t+2*p)+.2*Math.sin(13*t+3*p)))});
-// REPLACE hz with LOLA-derived horizon elevations (degrees), any length N, evenly spaced from azimuth 0 (north) clockwise.
-const SITES=[
-{id:'mal',name:'Malapert Massif',lat:-85.99,lon:0.12,hz:hzg(1.2,1.6,0)},
-{id:'hay',name:'Haworth rim',lat:-87.45,lon:-5.0,hz:hzg(2.2,2.4,1)},
-{id:'nob',name:'Nobile Rim 1',lat:-85.4,lon:31.4,hz:hzg(1.8,2,2)},
-{id:'con',name:'Connecting Ridge',lat:-89.45,lon:222.9,hz:hzg(.9,1.2,3)},
-{id:'sha',name:'Shackleton rim',lat:-89.54,lon:129.8,hz:hzg(1.6,1.8,4)}];
-$('site').innerHTML=SITES.map(s=>`<option value="${s.id}">${s.name}</option>`).join('');
-$('start').value=new Date().toISOString().slice(0,10);
-let steps=[],res={},cur=SITES[0],idx=0,playing=false,yaw=0,pitch=5*D,simple=false;const SH=1;
-/* ---------- BRAND: Eye of Horus (wedjat) and Akhet glyph ---------- */
-const WEDJAT="<svg class='eye' viewBox='0 0 72 44' aria-hidden='true'><path class='brow' d='M8 9 Q36 -1 64 9'/><g class='lid'><path class='almond' d='M6 22 Q36 4 66 22 Q36 40 6 22Z'/><circle class='pupil' cx='36' cy='22' r='8'/><circle class='glint' cx='39' cy='19' r='2.2'/></g><path class='tear' d='M44 34 L50 42 Q56 44 58 38'/><path class='curl' d='M28 34 Q22 42 14 40 Q8 38 11 33 Q14 30 17 33'/></svg>";
-const GLYPH="<svg viewBox='0 0 80 42' aria-hidden='true'><path d='M2 38 L16 10 Q40 34 64 10 L78 38 Z' fill='none' stroke='currentColor' stroke-width='3' stroke-linejoin='round'/><circle cx='40' cy='14' r='7' fill='currentColor'/></svg>";
-const eyeP=p=>WEDJAT.replace("class='eye'","class='eye open'").replace("class='lid'",`class='lid' style='transform:scaleY(${Math.max(.07,p/100).toFixed(2)})'`);
-const eyes2=r=>`<div class="eyes2"><div class="e1 sunEye">${eyeP(r.sp)}<b>${r.sp.toFixed(0)}%</b><small>Sun eye open: power</small></div><div class="e1 moonEye">${eyeP(r.ep)}<b>${r.ep.toFixed(0)}%</b><small>Moon eye open: link home</small></div></div>`;
-document.querySelectorAll('[data-eye]').forEach(n=>n.innerHTML=WEDJAT);document.querySelectorAll('[data-glyph]').forEach(n=>n.innerHTML=GLYPH);
-/* ---------- ENGINE ---------- */
-const dot=(a,b)=>a[0]*b[0]+a[1]*b[1]+a[2]*b[2],cr=(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]];
-const nm=a=>{const l=Math.hypot(...a);return a.map(v=>v/l)},sc=(a,k)=>a.map(v=>v*k),sb=(a,b)=>a.map((v,i)=>v-b[i]);
-const POLE=[Math.cos(66.5392*D)*Math.cos(269.9949*D),Math.cos(66.5392*D)*Math.sin(269.9949*D),Math.sin(66.5392*D)];
-function frame(date){
- const m=Astronomy.GeoMoon(date),s=Astronomy.GeoVector(Astronomy.Body.Sun,date,true),L=Astronomy.Libration(date);
- const mv=[m.x,m.y,m.z],e=nm(sc(mv,-1)),sun=nm(sb([s.x,s.y,s.z],mv));
- const ep=nm(sb(e,sc(POLE,dot(e,POLE)))),el=L.elon*D;
- const x=nm(sb(sc(ep,Math.cos(el)),sc(cr(POLE,ep),Math.sin(el)))),y=cr(POLE,x),tb=v=>[dot(v,x),dot(v,y),dot(v,POLE)];
- return{t:date.getTime(),s:tb(sun),e:tb(e)};
-}
-function azel(d,site){
- const p=site.lat*D,l=site.lon*D,up=[Math.cos(p)*Math.cos(l),Math.cos(p)*Math.sin(l),Math.sin(p)],
- no=[-Math.sin(p)*Math.cos(l),-Math.sin(p)*Math.sin(l),Math.cos(p)],ea=[-Math.sin(l),Math.cos(l),0];
- return{el:Math.asin(Math.max(-1,Math.min(1,dot(d,up))))/D,az:((Math.atan2(dot(d,ea),dot(d,no))/D)+360)%360};
-}
-function mask(s,az){const n=s.hz.length,p=((az%360)+360)%360/360*n,i=Math.floor(p)%n,t=p-Math.floor(p);return s.hz[i]*(1-t)+s.hz[(i+1)%n]*t}
-const SUNR=.27;
-function longest(a,v){let b=0,c=0;for(const x of a){x===v?b=Math.max(b,++c):c=0}return b}
-function compute(){
- const days=+$('days').value,n=Math.floor(days*24/SH),t0=new Date($('start').value+'T00:00:00Z').getTime();
- steps=[];for(let i=0;i<n;i++)steps.push(frame(new Date(t0+i*SH*36e5)));
- res={};const W=Math.max(1,Math.round(+$('win').value*24/SH));
- for(const s of SITES){const sun=[],ea=[];
-  for(const f of steps){const a=azel(f.s,s),b=azel(f.e,s);sun.push(a.el+SUNR>mask(s,a.az));ea.push(b.el>mask(s,b.az))}
-  const pc=a=>a.reduce((x,y)=>x+y,0)/a.length*100,ps=[0],pe=[0];sun.forEach((v,i)=>{ps.push(ps[i]+v);pe.push(pe[i]+ea[i])});
-  let best=-1,bi=0;for(let i=0;i+W<=n;i++){const q=ps[i+W]-ps[i]+pe[i+W]-pe[i];if(q>best){best=q;bi=i}}
-  res[s.id]={s,sun,ea,sp:pc(sun),ep:pc(ea),dark:longest(sun,false)*SH,blk:longest(ea,false)*SH,bi,bs:(ps[bi+W]-ps[bi])/W*100,be:(pe[bi+W]-pe[bi])/W*100}}
- idx=0;$('slider').max=n-1;cards();timeline();look('E');upd();
-}
-/* ---------- 3D SCENE ---------- */
-const rnd=(()=>{let s=11;return()=>(s=s*16807%2147483647)/2147483647})();
-const tex=(w,h,fn)=>{const c=document.createElement('canvas');c.width=w;c.height=h;fn(c.getContext('2d'),w,h);return new THREE.CanvasTexture(c)};
-const glowT=tex(128,128,(g)=>{const r=g.createRadialGradient(64,64,0,64,64,64);r.addColorStop(0,'rgba(255,255,255,1)');r.addColorStop(.15,'rgba(255,230,170,.7)');r.addColorStop(.5,'rgba(255,190,90,.15)');r.addColorStop(1,'rgba(255,170,60,0)');g.fillStyle=r;g.fillRect(0,0,128,128)});
-const earthT=tex(512,256,(g,w,h)=>{const o=g.createLinearGradient(0,0,0,h);o.addColorStop(0,'#cfe2f5');o.addColorStop(.12,'#1d4f91');o.addColorStop(.88,'#1d4f91');o.addColorStop(1,'#e8f2fb');g.fillStyle=o;g.fillRect(0,0,w,h);
- for(let i=0;i<46;i++){g.fillStyle=rnd()<.5?'#3f7d3c':'#9a8b57';g.beginPath();g.ellipse(rnd()*w,h*.15+rnd()*h*.7,10+rnd()*46,6+rnd()*26,rnd()*3,0,7);g.fill()}
- g.fillStyle='rgba(255,255,255,.6)';for(let i=0;i<70;i++){g.beginPath();g.ellipse(rnd()*w,rnd()*h,14+rnd()*50,2+rnd()*7,rnd()*.6,0,7);g.fill()}});
-const moonT=tex(512,256,(g,w,h)=>{g.fillStyle='#8f8e8a';g.fillRect(0,0,w,h);
- for(let i=0;i<12;i++){g.fillStyle='rgba(55,55,60,.55)';g.beginPath();g.ellipse(rnd()*w,h*.2+rnd()*h*.6,20+rnd()*45,14+rnd()*30,rnd()*3,0,7);g.fill()}
- for(let i=0;i<900;i++){const x=rnd()*w,y=rnd()*h,r=1+rnd()*rnd()*14;g.fillStyle=`rgba(40,40,44,${.15+rnd()*.25})`;g.beginPath();g.arc(x,y,r,0,7);g.fill();g.strokeStyle='rgba(235,235,230,.28)';g.lineWidth=1;g.beginPath();g.arc(x-.5,y-.5,r,0,7);g.stroke()}});
-const soilT=tex(512,512,(g,w,h)=>{g.fillStyle='#8d8b85';g.fillRect(0,0,w,h);for(let i=0;i<14000;i++){const v=105+rnd()*70|0;g.fillStyle=`rgba(${v},${v-2},${v-6},.55)`;const r=rnd()*2.4;g.fillRect(rnd()*w,rnd()*h,r+.6,r+.6)}});
-soilT.wrapS=soilT.wrapT=THREE.RepeatWrapping;soilT.repeat.set(70,70);
-const cv=$('pov'),R=new THREE.WebGLRenderer({canvas:cv,antialias:true});R.setPixelRatio(Math.min(2,devicePixelRatio));
-const scene=new THREE.Scene(),cam=new THREE.PerspectiveCamera(62,1,1,3000);cam.rotation.order='YXZ';cam.position.set(0,2,0);
-const stars=(()=>{const p=[],c=[];for(let i=0;i<3500;i++){const u=rnd()*2-1,t=rnd()*6.283,r=Math.sqrt(1-u*u),k=rnd();p.push(1900*r*Math.cos(t),1900*u,1900*r*Math.sin(t));const b=.4+.6*k*k;c.push(b,b,b*(.85+.3*rnd()))}
- const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(p,3));g.setAttribute('color',new THREE.Float32BufferAttribute(c,3));
- return new THREE.Points(g,new THREE.PointsMaterial({size:2.1,vertexColors:true,sizeAttenuation:false,fog:false}))})();scene.add(stars);
-const sunL=new THREE.DirectionalLight(0xfff2dd,0),amb=new THREE.AmbientLight(0x4a5a78,.25);scene.add(sunL,amb);
-const ground=new THREE.Mesh(new THREE.CircleGeometry(800,64),new THREE.MeshLambertMaterial({map:soilT}));ground.rotation.x=-Math.PI/2;scene.add(ground);
-const ridge=new THREE.Mesh(new THREE.BufferGeometry(),new THREE.MeshLambertMaterial({color:0x7a7872,side:THREE.DoubleSide}));scene.add(ridge);
-function buildRidge(s){const p=[],ix=[];for(let a=0;a<=360;a++){const h=Math.tan(mask(s,a%360)*D)*800,x=800*Math.sin(a*D),z=-800*Math.cos(a*D);p.push(x,-40,z,x,h,z);if(a){const k=(a-1)*2;ix.push(k,k+1,k+2,k+1,k+3,k+2)}}
- ridge.geometry.dispose();const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(p,3));g.setIndex(ix);g.computeVertexNormals();ridge.geometry=g}
-const mkS=(m,s)=>{const o=new THREE.Sprite(new THREE.SpriteMaterial({map:glowT,color:0xffffff,blending:THREE.AdditiveBlending,depthWrite:false,fog:false,...m}));o.scale.set(s,s,1);scene.add(o);return o};
-const sunCore=mkS({},1),sunGlow=mkS({opacity:.9},1),sunHalo=mkS({opacity:.35},1);
-const earthM=new THREE.Mesh(new THREE.SphereGeometry(1,48,32),new THREE.ShaderMaterial({uniforms:{map:{value:earthT},uSun:{value:new THREE.Vector3(1,0,0)}},
- vertexShader:'varying vec3 n;varying vec2 u;void main(){n=normalize(mat3(modelMatrix)*normal);u=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',
- fragmentShader:'uniform sampler2D map;uniform vec3 uSun;varying vec3 n;varying vec2 u;void main(){float l=clamp(dot(normalize(n),uSun),0.,1.);float rim=pow(1.-abs(normalize(n).z*0.),1.);vec3 c=texture2D(map,u).rgb;gl_FragColor=vec4(c*(0.03+1.05*l)+vec3(.05,.12,.3)*pow(1.-l,3.)*.15,1.);}'}));scene.add(earthM);
-const earthGlow=mkS({color:0x6fa8ff,opacity:.3},1);
-const streak=mkS({opacity:.5,color:0xcfe0ff},1),earthL=new THREE.DirectionalLight(0x7fa8ff,0);scene.add(earthL);
-const NOISE='float h3(vec3 p){p=fract(p*.3183099+.1);p*=17.;return fract(p.x*p.y*p.z*(p.x+p.y+p.z));}float vn(vec3 x){vec3 i=floor(x),f=fract(x);f=f*f*(3.-2.*f);return mix(mix(mix(h3(i),h3(i+vec3(1,0,0)),f.x),mix(h3(i+vec3(0,1,0)),h3(i+vec3(1,1,0)),f.x),f.y),mix(mix(h3(i+vec3(0,0,1)),h3(i+vec3(1,0,1)),f.x),mix(h3(i+vec3(0,1,1)),h3(i+vec3(1,1,1)),f.x),f.y),f.z);}float fbm(vec3 p){float a=.5,s=0.;for(int i=0;i<4;i++){s+=a*vn(p);p=p*2.02+7.1;a*=.5;}return s;}';
-const EMAT=new THREE.ShaderMaterial({uniforms:{uSun:{value:new THREE.Vector3(1,0,0)},uT:{value:0}},
- vertexShader:'varying vec3 vP;varying vec3 vWN;varying vec3 vW;void main(){vP=position;vWN=normalize(mat3(modelMatrix)*normal);vec4 w=modelMatrix*vec4(position,1.);vW=w.xyz;gl_Position=projectionMatrix*viewMatrix*w;}',
- fragmentShader:'uniform vec3 uSun;uniform float uT;varying vec3 vP;varying vec3 vWN;varying vec3 vW;'+NOISE+'void main(){vec3 N=normalize(vWN),V=normalize(cameraPosition-vW),p=normalize(vP);float l=dot(N,uSun),day=smoothstep(-.2,.25,l),lat=abs(p.y);float land=fbm(p*2.1+vec3(3.,1.,5.));float isL=smoothstep(.5,.54,land);float ice=smoothstep(.8,.88,lat+.1*fbm(p*6.));vec3 ocean=mix(vec3(.02,.1,.3),vec3(.06,.34,.62),smoothstep(.36,.5,land));float dry=smoothstep(.48,.64,fbm(p*2.6+vec3(9.,2.,4.))+.15*(1.-lat));vec3 lc=mix(mix(vec3(.05,.2,.06),vec3(.14,.32,.1),fbm(p*9.)),vec3(.58,.46,.28),dry);lc=mix(lc,vec3(.45,.42,.38),smoothstep(.62,.8,land));vec3 surf=mix(mix(ocean,lc,isL),vec3(.92,.95,1.),ice);vec3 H=normalize(uSun+V);float spec=pow(max(dot(N,H),0.),90.)*(1.-isL)*(1.-ice)*day;float cl=smoothstep(.5,.75,fbm(p*3.4+vec3(uT*.004,0.,uT*.002))+.12*fbm(p*12.));vec3 col=surf*day*1.9+spec*vec3(1.,.9,.7)*1.2;col=mix(col,vec3(.95,.97,1.)*(.06+1.25*day),cl*.85);float city=isL*(1.-ice)*smoothstep(.62,.8,fbm(p*18.))*smoothstep(.45,.6,fbm(p*5.+vec3(2.)))*(1.-day)*(1.-cl*.8);col+=city*vec3(1.,.72,.35)*1.3+surf*.05+vec3(.004,.01,.03);float fr=pow(1.-max(dot(N,V),0.),3.);col+=vec3(.25,.55,1.)*fr*(.25+1.6*smoothstep(-.3,.5,l));gl_FragColor=vec4(col,1.);}'});
-earthM.material.dispose();earthM.material=EMAT;
-const atm=new THREE.Mesh(new THREE.SphereGeometry(1.07,48,32),new THREE.ShaderMaterial({uniforms:{uSun:EMAT.uniforms.uSun},side:THREE.BackSide,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,
- vertexShader:'varying vec3 vN;varying vec3 vWN;void main(){vN=normalize(normalMatrix*normal);vWN=normalize(mat3(modelMatrix)*normal);gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',
- fragmentShader:'uniform vec3 uSun;varying vec3 vN;varying vec3 vWN;void main(){float a=pow(smoothstep(0.,.36,abs(vN.z)),1.6);float lit=smoothstep(-.35,.55,dot(normalize(vWN),uSun));gl_FragColor=vec4(vec3(.3,.6,1.)*a*2.6*(.18+lit),1.);}'}));earthM.add(atm);
-/* ---- cinematic intro: rolling dunes, rocks, big Earth with the Sun at its limb ---- */
-const hs=(x,y)=>{const s=Math.sin(x*127.1+y*311.7)*43758.5453;return s-Math.floor(s)};
-const vn2=(x,y)=>{const i=Math.floor(x),j=Math.floor(y),u=x-i,v=y-j,a=u*u*(3-2*u),b=v*v*(3-2*v);return(hs(i,j)*(1-a)+hs(i+1,j)*a)*(1-b)+(hs(i,j+1)*(1-a)+hs(i+1,j+1)*a)*b};
-const fb2=(x,y)=>{let s=0,a=.5;for(let i=0;i<4;i++){s+=a*vn2(x,y);x=x*2.03+5;y=y*2.03+9;a/=2}return s};
-const CR=Array.from({length:40},()=>{const a=rnd()*6.283,r=30+Math.pow(rnd(),1.4)*430;return[r*Math.sin(a),-r*Math.cos(a),14+rnd()*rnd()*75]});
-const crat=(x,z)=>{let h=0;for(const[c,d,r]of CR){const q=Math.hypot(x-c,z-d)/r;if(q<1.4)h+=(q<1?-(1-q*q)*r*.16:0)+r*.05*Math.exp(-Math.pow((q-1)*4,2))}return h};
-const hgt=(x,z)=>{const d=Math.hypot(x,z),k=Math.min(1,Math.max(0,(d-5)/90))*(1-Math.min(1,Math.max(0,(d-480)/260)));return k*Math.max(0,fb2(x*.0045,z*.0045)-.32)*34+k*fb2(x*.05,z*.05)*1.6+k*crat(x,z)};
-ground.position.y=-30;
-const dunes=(()=>{const g=new THREE.PlaneGeometry(1500,1500,230,230);g.rotateX(-Math.PI/2);const p=g.attributes.position;for(let i=0;i<p.count;i++){const x=p.getX(i),z=p.getZ(i);p.setY(i,Math.hypot(x,z)>790?-60:hgt(x,z))}g.computeVertexNormals();const m=new THREE.Mesh(g,new THREE.MeshLambertMaterial({map:soilT}));scene.add(m);return m})();
-const rocks=new THREE.Group();scene.add(rocks);
-{const g=new THREE.DodecahedronGeometry(1,0),m=new THREE.MeshLambertMaterial({color:0x77746f,flatShading:true});for(let i=0;i<170;i++){const r=7+Math.pow(rnd(),1.6)*140,a=rnd()*6.283,x=r*Math.sin(a),z=-r*Math.cos(a),s=.1+Math.pow(rnd(),3)*1.5,o=new THREE.Mesh(g,m);o.position.set(x,hgt(x,z)+s*.2,z);o.scale.set(s,s*.6,s*.9);o.rotation.set(rnd()*3,rnd()*3,rnd()*3);rocks.add(o)}}
-let K=0,KT=-1,introRun=true,REAL=null,mx=.5,my=.5;addEventListener('pointermove',e=>{mx=e.clientX/innerWidth;my=e.clientY/innerHeight});
-let EP0=new THREE.Vector3(),SP0=new THREE.Vector3(),T0=-1;const ER0=1000*Math.tan(17*D);
-function setIntro(s){const q=Math.min(1,Math.max(0,(s-.5)/9)),el=(5+12*(1-Math.pow(1-q,3)))*D,az=4*D;EP0.set(Math.sin(az)*Math.cos(el),Math.sin(el),-Math.cos(az)*Math.cos(el)).multiplyScalar(1000);const f=EP0.clone().normalize(),r=new THREE.Vector3().crossVectors(f,new THREE.Vector3(0,1,0)).normalize(),u=new THREE.Vector3().crossVectors(r,f);SP0.copy(EP0).addScaledVector(r,ER0*1.05).addScaledVector(u,ER0*.7).addScaledVector(f,ER0*.35)}setIntro(0);
-function blend(s=performance.now()/1e3){
- if(!REAL)return;const e=K*K*(3-2*K),V=(a,b)=>a.clone().lerp(b,e),L=(a,b)=>a+(b-a)*e;
- const rE=REAL.ev.clone().multiplyScalar(1000),rS=REAL.sv.clone().multiplyScalar(1000),EP=V(EP0,rE),ER=L(ER0,1000*Math.tan(2.85*D)),SP=V(SP0,rS),sd=SP.length();
- earthM.position.copy(EP);earthM.scale.setScalar(ER);earthM.rotation.y=(1-e)*s*.03+e*REAL.rot;earthGlow.position.copy(EP);earthGlow.scale.setScalar(ER*2.7);
- const ld=V(SP0.clone().sub(EP0).normalize(),REAL.sv).normalize();EMAT.uniforms.uSun.value.copy(ld);EMAT.uniforms.uT.value=s;
- [sunCore,sunGlow,sunHalo,streak].forEach(o=>o.position.copy(SP));const m=1+(1-e)*.9;
- sunCore.scale.setScalar(ang(2*m,sd));sunGlow.scale.setScalar(ang(8*m,sd));sunHalo.scale.setScalar(ang(30*m,sd));streak.scale.set(ang(75,sd),ang(2.4,sd),1);streak.material.opacity=.5*(1-e);
- sunCore.visible=sunGlow.visible=sunHalo.visible=e<1||REAL.svis;streak.visible=e<1;earthM.visible=earthGlow.visible=e<1||REAL.evis;
- sunL.position.copy(ld);sunL.intensity=L(1.6,REAL.sOn?2.2:0);earthL.position.copy(V(EP0,rE).normalize());earthL.intensity=L(1.7,REAL.eOn?.2:0);amb.intensity=L(.6,.18+(REAL.eOn?.14:0));
- dunes.scale.y=Math.max(.001,1-e);rocks.visible=e<.5;ridge.visible=e>.7;}
-function tick(t){
- if(T0<0)T0=t;if(introRun)setIntro((t-T0)/1e3);if(KT>0&&K<1)K=Math.min(1,(t-KT)/3600);
- const e=K*K*(3-2*K),s=t/1e3;
- if(K<1||introRun){blend(s);if(K>=1){introRun=false;dunes.visible=rocks.visible=false;ground.position.y=-.03}}
- const iy=-4*D+(mx-.5)*.14+Math.sin(s*.11)*.025,ip=.13+(.5-my)*.05+Math.sin(s*.15)*.01;let dy=yaw-iy;dy=Math.atan2(Math.sin(dy),Math.cos(dy));
- cam.rotation.set(ip+(pitch-ip)*e,iy+dy*e,0);cam.position.set(0,2+Math.sin(s*.2)*.06*(1-e),-Math.min(s*.12,5)*(1-e));
- if(K<.4){cam.updateMatrixWorld();const w=cv.clientWidth,h=cv.clientHeight,P=earthM.position.clone(),Q=P.clone().addScaledVector(new THREE.Vector3().setFromMatrixColumn(cam.matrixWorld,0),ER0);P.project(cam);Q.project(cam);const px=(P.x*.5+.5)*w,py=(-P.y*.5+.5)*h,rp=Math.abs(Q.x-P.x)*.5*w,tg=$('tagE');tg.style.left=Math.max(8,px-rp*1.08-tg.offsetWidth)+'px';tg.style.top=(py-rp*.3)+'px'}}
-const dirV=(az,el)=>new THREE.Vector3(Math.sin(az*D)*Math.cos(el*D),Math.sin(el*D),-Math.cos(az*D)*Math.cos(el*D));
-const ang=(deg,d)=>2*d*Math.tan(deg*D/2);
-let sAE={az:0,el:0},eAE={az:0,el:0};
-function upd(){
- if(!steps.length)return;const f=steps[idx],r=res[cur.id];
- sAE=azel(f.s,cur);eAE=azel(f.e,cur);const sv=dirV(sAE.az,sAE.el),ev=dirV(eAE.az,eAE.el),sOn=r.sun[idx],eOn=r.ea[idx];
- sunCore.position.copy(sv).multiplyScalar(1000);sunGlow.position.copy(sunCore.position);sunHalo.position.copy(sunCore.position);
- sunCore.scale.setScalar(ang(2,1000));sunGlow.scale.setScalar(ang(7,1000));sunHalo.scale.setScalar(ang(26,1000));
- earthM.position.copy(ev).multiplyScalar(1000);earthM.scale.setScalar(1000*Math.tan(2.85*D));earthM.rotation.y=idx*SH/24*Math.PI*2;
- earthM.material.uniforms.uSun.value.copy(sv);earthGlow.position.copy(earthM.position);earthGlow.scale.setScalar(ang(12,1000));
- const vis=sAE.el>-3;sunCore.visible=sunGlow.visible=sunHalo.visible=vis;earthM.visible=earthGlow.visible=eAE.el>-3;
- sunL.position.copy(sv);sunL.intensity=sOn?2.2:0;amb.intensity=.18+(eOn?.14:0);
- REAL={sv:sv.clone(),ev:ev.clone(),sOn,eOn,svis:vis,evis:eAE.el>-3,rot:earthM.rotation.y};blend();
- $('sunEl').textContent=sAE.el.toFixed(1)+'°';$('earEl').textContent=eAE.el.toFixed(1)+'°';
- setChip('pwr',sOn,'Eye open: sunlit','Eye closed: in shadow');setChip('com',eOn,'Eye open: link to Earth','Eye closed: blocked');$('akhet').classList.toggle('on',Math.abs(sAE.el+SUNR-mask(cur,sAE.az))<.4);
- $('tlabel').textContent=new Date(f.t).toISOString().slice(0,16).replace('T',' ')+' UTC';$('slider').value=idx;moonScene(f);
-}
-const setChip=(id,on,a,b)=>{const e=$(id);e.textContent=on?a:b;e.className='st '+(on?'go':'stop');e.closest('.eyeblk').querySelector('.eye').classList.toggle('open',on)};
-/* ---------- MOON GLOBE ---------- */
-const GR=new THREE.WebGLRenderer({canvas:$('globe'),antialias:true,alpha:true});GR.setPixelRatio(Math.min(2,devicePixelRatio));GR.setSize(190,190,false);
-const gs=new THREE.Scene(),gc=new THREE.PerspectiveCamera(32,1,.1,50),gl=new THREE.DirectionalLight(0xffffff,2.4),gm=new THREE.Mesh(new THREE.SphereGeometry(1,48,32),new THREE.MeshLambertMaterial({map:moonT}));
-gs.add(gm,gl,new THREE.AmbientLight(0x303848,.5));
-const B=v=>new THREE.Vector3(v[0],v[2],-v[1]),sp=s=>{const p=s.lat*D,l=s.lon*D;return B([Math.cos(p)*Math.cos(l),Math.cos(p)*Math.sin(l),Math.sin(p)])};
-const marks=SITES.map(s=>{const m=new THREE.Mesh(new THREE.SphereGeometry(.035,12,8),new THREE.MeshBasicMaterial({color:0xff6b5e}));m.position.copy(sp(s)).multiplyScalar(1.01);gs.add(m);return m});
-function moonScene(f){gl.position.copy(B(f.s)).multiplyScalar(5);const p=sp(cur);gc.position.copy(p).multiplyScalar(3.6);gc.up.set(0,0,-1);gc.lookAt(0,0,0);
- marks.forEach((m,i)=>{const on=SITES[i]===cur;m.material.color.set(on?0xffc94a:0xff6b5e);m.scale.setScalar(on?1.8:1)});GR.render(gs,gc)}
-/* ---------- LOOP & INPUT ---------- */
-function size(){const w=cv.clientWidth,h=cv.clientHeight;R.setSize(w,h,false);cam.aspect=w/h;cam.fov=w<h?80:62;cam.updateProjectionMatrix()}
-addEventListener('resize',()=>{size();if(steps.length)timeline()});size();
-let last=performance.now(),acc=0;
-(function loop(t){requestAnimationFrame(loop);const dt=Math.min(.1,(t-last)/1e3);last=t;
- if(playing&&steps.length){acc+=dt*+$('spd').value/SH;if(acc>=1){const k=Math.floor(acc);acc-=k;idx=(idx+k)%steps.length;upd()}}
- tick(t);R.render(scene,cam)})(last);
-let drag=null;cv.onpointerdown=e=>{if(K<1)return;drag=[e.clientX,e.clientY];cv.setPointerCapture(e.pointerId)};cv.onpointerup=()=>drag=null;
-cv.onpointermove=e=>{if(!drag)return;yaw+=(e.clientX-drag[0])*.004;pitch=Math.max(-.1,Math.min(1.2,pitch-(e.clientY-drag[1])*.004));drag=[e.clientX,e.clientY]};
-function look(w){const a=w==='S'?sAE:eAE;if(!steps.length)return;const f=steps[idx],q=azel(w==='S'?f.s:f.e,cur);yaw=-q.az*D;pitch=Math.max(.02,(q.el+4)*D)}
-function jump(key){const a=res[cur.id][key];for(let k=1;k<a.length;k++){const j=(idx+k)%a.length;if(a[j]!==a[idx]){idx=j;upd();return}}}
-$('enter').onclick=()=>{document.body.classList.remove('intro');KT=performance.now()};
-$('play').onclick=()=>{playing=!playing;$('play').textContent=playing?'Pause':'Play'};
-$('slider').oninput=e=>{idx=+e.target.value;upd()};
-$('site').onchange=e=>{cur=SITES.find(s=>s.id===e.target.value);buildRidge(cur);upd();look('E');cards()};
-$('lookS').onclick=()=>look('S');$('lookE').onclick=()=>look('E');
-$('nextS').onclick=()=>jump('sun');$('nextE').onclick=()=>jump('ea');
-/* ---------- ANALYSIS ---------- */
-const fd=h=>h>=48?(h/24).toFixed(1)+' days':h+' h',ds=i=>new Date(steps[i].t).toISOString().slice(0,10);
-const verdict=p=>p>=70?'excellent':p>=50?'good':p>=30?'marginal':'poor';
-function cards(){$('cards').innerHTML=SITES.map(s=>{const r=res[s.id];if(!r)return'';return`<div class="card glass ${s===cur?'sel':''}"><h3>${s.name}</h3>${eyes2(r)}`+(simple?
- `<p class="plain">Sunlight ${r.sp.toFixed(0)}% of the time: ${verdict(r.sp)} for solar power. Longest night ${fd(r.dark)}. Earth in view ${r.ep.toFixed(0)}% of the time, longest signal gap ${fd(r.blk)}.</p>`:
- `<div class="m">Longest darkness<b>${fd(r.dark)}</b></div><div class="m">Longest comms blackout<b>${fd(r.blk)}</b></div>`)+
- `<div class="note">Best ${$('win').value}-day window starts ${ds(r.bi)} (sun ${r.bs.toFixed(0)}%, Earth ${r.be.toFixed(0)}%)</div></div>`}).join('')}
-function timeline(){const W=Math.max(600,Math.min(1024,innerWidth-36)),rh=13,lh=20,H=SITES.length*(2*rh+lh+8)+24,c=$('tl'),dpr=devicePixelRatio||1;c.width=W*dpr;c.height=H*dpr;c.style.width=W+'px';c.style.height=H+'px';
- const g=c.getContext('2d');g.scale(dpr,dpr);g.font='12px Sora,system-ui,sans-serif';const bw=W/steps.length;let y=0;
- for(const s of SITES){const r=res[s.id];g.fillStyle='#e9ecf3';g.fillText(s.name,0,y+13);y+=lh;
-  [[r.sun,'#ffc94a'],[r.ea,'#5aa2ff']].forEach(([a,col])=>{g.fillStyle='#161b27';g.fillRect(0,y,W,rh-2);g.fillStyle=col;a.forEach((v,i)=>{if(v)g.fillRect(i*bw,y,Math.ceil(bw),rh-2)});y+=rh});y+=8}
- g.fillStyle='#8d97ab';for(let k=0;k<6;k++){const i=Math.floor(k*(steps.length-1)/5);g.fillText(ds(i).slice(5),Math.min(i*bw,W-34),H-5)}}
-$('go').onclick=compute;$('mode').onclick=()=>{simple=!simple;$('mode').textContent=simple?'Switch to expert view':'Switch to simple view';cards()};
-try{compute();buildRidge(cur);upd();look('E')}catch(e){document.body.insertAdjacentHTML('afterbegin','<p style="padding:20px">Could not load the astronomy or 3D library. Check your connection and reload.</p>')}
+const $=id=>document.getElementById(id),D=Math.PI/180,N=720;
+const WED="<svg class='eye' viewBox='0 0 72 44'><path d='M8 9 Q36 -1 64 9'/><path d='M6 22 Q36 4 66 22 Q36 40 6 22Z'/><circle class='pu' cx='36' cy='22' r='8'/><path d='M44 34 L50 42 Q56 44 58 38'/><path d='M28 34 Q22 42 14 40 Q8 38 11 33'/></svg>";
+$('gl').innerHTML="<svg viewBox='0 0 80 42'><path d='M2 38 L16 10 Q40 34 64 10 L78 38 Z' fill='none' stroke='currentColor' stroke-width='3'/><circle cx='40' cy='14' r='7' fill='currentColor'/></svg>";
+const SITES=[{id:'mal',n:'Malapert Massif (south pole)',lat:-85.99,lon:.12},{id:'hay',n:'Haworth rim (south pole)',lat:-87.45,lon:-5},{id:'nob',n:'Nobile Rim 1 (Artemis III)',lat:-85.4,lon:31.4},
+{id:'con',n:'Connecting Ridge (Artemis III)',lat:-89.45,lon:-137.1},{id:'sha',n:'Shackleton rim (south pole)',lat:-89.54,lon:129.8},{id:'cha',n:'Chandrayaan-3 landing',lat:-69.37,lon:32.32},
+{id:'a15',n:'Apollo 15 (Hadley)',lat:26.13,lon:3.63},{id:'a11',n:'Apollo 11 (Tranquility)',lat:.67,lon:23.47},{id:'cus',n:'Custom coordinates…',lat:-85,lon:0}];
+const hzg=(b,a,p)=>Array.from({length:360},(_,i)=>{const t=i*D;return Math.max(0,b+a*(.5*Math.sin(3*t+p)+.3*Math.sin(7*t+2*p)+.2*Math.sin(13*t+3*p)))});
+const PH={mal:hzg(1.2,1.6,0),hay:hzg(2.2,2.4,1),nob:hzg(1.8,2,2),con:hzg(.9,1.2,3),sha:hzg(1.6,1.8,4),cha:hzg(.5,.8,5),a15:hzg(1,1.5,6),a11:Array(360).fill(0)};
+let HZ={};fetch('data/horizons.json').then(r=>r.json()).then(j=>{HZ=j;all()}).catch(()=>{});
+const hzOf=id=>HZ[id]||PH[id]||Array(360).fill(0);
+/* ---- math: JPL-family ephemeris (astronomy-engine) + IAU 2009 Moon orientation ---- */
+const rz=(v,a)=>{const c=Math.cos(a),s=Math.sin(a);return[c*v[0]+s*v[1],-s*v[0]+c*v[1],v[2]]},rx=(v,a)=>{const c=Math.cos(a),s=Math.sin(a);return[v[0],c*v[1]+s*v[2],-s*v[1]+c*v[2]]};
+const nm=a=>{const l=Math.hypot(...a);return a.map(v=>v/l)},dot=(a,b)=>a[0]*b[0]+a[1]*b[1]+a[2]*b[2];
+function frame(dt){const d=dt.getTime()/864e5-10957.5,T=d/36525,E=(a,b)=>(a+b*d)*D,S=Math.sin,C=Math.cos;
+const e1=E(125.045,-.0529921),e2=E(250.089,-.1059842),e3=E(260.008,13.0120009),e4=E(176.625,13.3407154),e5=E(357.529,.9856003),e6=E(311.589,26.4057084),e7=E(134.963,13.064993),e8=E(276.617,.3287146),e9=E(34.226,1.7484877),e10=E(15.134,-.1589763),e11=E(119.743,.0036096),e12=E(239.961,.1643573),e13=E(25.053,12.9590088);
+const ra=269.9949+.0031*T-3.8787*S(e1)-.1204*S(e2)+.07*S(e3)-.0172*S(e4)+.0072*S(e6)-.0052*S(e10)+.0043*S(e13);
+const de=66.5392+.013*T+1.5419*C(e1)+.0239*C(e2)-.0278*C(e3)+.0068*C(e4)-.0029*C(e6)+.0009*C(e7)+.0008*C(e10)-.0009*C(e13);
+const W=38.3213+13.17635815*d+3.561*S(e1)+.1208*S(e2)-.0642*S(e3)+.0158*S(e4)+.0252*S(e5)-.0066*S(e6)-.0047*S(e7)-.0046*S(e8)+.0028*S(e9)+.0052*S(e10)+.004*S(e11)+.0019*S(e12)-.0044*S(e13);
+const m=Astronomy.GeoMoon(dt),s=Astronomy.GeoVector(Astronomy.Body.Sun,dt,true),mv=[m.x,m.y,m.z],sun=[s.x-m.x,s.y-m.y,s.z-m.z],ear=mv.map(x=>-x);
+const B=v=>rz(rx(rz(v,(90+ra)*D),(90-de)*D),W*D);
+return{s:nm(B(sun)),e:nm(B(ear)),sr:.2666/Math.hypot(...sun),er:Math.asin(6371/(Math.hypot(...mv)*149597870.7))/D}}
+function azel(v,la,lo){const p=la*D,l=lo*D,up=[Math.cos(p)*Math.cos(l),Math.cos(p)*Math.sin(l),Math.sin(p)],no=[-Math.sin(p)*Math.cos(l),-Math.sin(p)*Math.sin(l),Math.cos(p)],ea=[-Math.sin(l),Math.cos(l),0];
+return{el:Math.asin(Math.max(-1,Math.min(1,dot(v,up))))/D,az:(Math.atan2(dot(v,ea),dot(v,no))/D+360)%360}}
+const mask=(h,az)=>{const n=h.length,p=(az%360+360)%360/360*n,i=Math.floor(p)%n,t=p-Math.floor(p);return h[i]*(1-t)+h[(i+1)%n]*t};
+const FR=new Map();function frames(t0){if(!FR.has(t0)){FR.set(t0,Array.from({length:N},(_,i)=>frame(new Date(t0+i*36e5))));if(FR.size>8)FR.delete(FR.keys().next().value)}return FR.get(t0)}
+/* ---- helpers ---- */
+const fd=h=>h==null?'—':h<48?Math.round(h)+' h':(h/24).toFixed(1)+' days';
+const flip=(a,i)=>{for(let j=i+1;j<N;j++)if(a[j]!==a[i])return j-i;return null};
+const longest=(a,v)=>{let b=0,c=0;for(const x of a){x===v?b=Math.max(b,++c):c=0}return b};
+const pct=a=>a.filter(Boolean).length/N*100;
+const timer=(a,i,up,dn)=>{const x=flip(a,i);return x==null?(a[i]?'stays up for at least '+fd(N-1-i):'stays hidden for at least '+fd(N-1-i)):(a[i]?up:dn)+' in '+fd(x)};
+let expert=false,SER={};
+const panel=k=>`<section class="card"><h2>Site ${k}</h2><select id="s${k}" aria-label="Site ${k}"></select>
+<div class="cust" id="c${k}" hidden><label>Latitude° (south −)<input id="la${k}" type="number" step=".01" value="-85"></label><label>Longitude° (east +)<input id="lo${k}" type="number" step=".01" value="0"></label></div><div><span class="badge" id="b${k}"></span></div>
+<label>Date<input id="d${k}" type="date"></label><label>Moment in the Moon day: <b id="t${k}"></b><input id="h${k}" type="range" min="0" max="${N-1}" value="0"></label>
+<div class="eyes" id="e${k}"></div><div id="m${k}"></div>
+<canvas id="pa${k}" width="680" height="220"></canvas><p class="cap">Horizon map: the skyline all around you (N, E, S, W). Dots show where the Sun (gold) and Earth (blue) travel over about 30 days.</p>
+<canvas id="tl${k}" width="680" height="190"></canvas><p class="cap">Timeline: lines are heights above the flat horizon. Bars at the bottom are on when the Sun or Earth is above the skyline. Click to jump.</p></section>`;
+$('panels').innerHTML=panel('A')+panel('B');
+const today=new Date().toISOString().slice(0,10);
+['A','B'].forEach((k,n)=>{$('s'+k).innerHTML=SITES.map(s=>`<option value="${s.id}">${s.n}</option>`).join('');$('s'+k).value=n?'con':'mal';$('d'+k).value=today;
+ ['s','la','lo','d','h'].forEach(p=>$(p+k).addEventListener('input',()=>{if($('link').checked&&k==='A'){$('dB').value=$('dA').value;$('hB').value=$('hA').value}n?render('B'):all()}))});
+function render(k){const id=$('s'+k).value,S=SITES.find(s=>s.id===id),cu=id==='cus';$('c'+k).hidden=!cu;
+ const lat=Math.max(-89.99,Math.min(89.99,cu?+$('la'+k).value:S.lat)),lon=cu?+$('lo'+k).value:S.lon,t0=Date.parse($('d'+k).value+'T00:00:00Z'),i=+$('h'+k).value;if(isNaN(t0)||isNaN(lat)||isNaN(lon))return;
+ const real=!!HZ[id],hz=hzOf(id),key=[id,lat,lon,t0,real].join();
+ if(!SER[k]||SER[k].key!==key){const f=frames(t0),o={key,sE:[],sA:[],eE:[],eA:[],sO:[],eO:[],f};for(const x of f){const a=azel(x.s,lat,lon),b=azel(x.e,lat,lon);o.sE.push(a.el);o.sA.push(a.az);o.eE.push(b.el);o.eA.push(b.az);o.sO.push(a.el+x.sr>mask(hz,a.az));o.eO.push(b.el>mask(hz,b.az))}SER[k]=o}
+ const o=SER[k],t=new Date(t0+i*36e5);$('t'+k).textContent=t.toISOString().slice(0,16).replace('T',' ')+' UTC (day '+(i/24).toFixed(1)+')';
+ $('b'+k).className='badge '+(real?'real':'fake');$('b'+k).textContent=real?'Terrain: real LOLA horizon':id==='cus'?'Terrain: flat horizon assumed':'Terrain: placeholder (run the LOLA script)';
+ const sOn=o.sO[i],eOn=o.eO[i],pw=sOn?Math.sin(Math.max(0,o.sE[i])*D)*100:0;
+ $('e'+k).innerHTML=`<div class="e1 s">${WED}<b>${sOn?'Sun eye open':'Sun eye closed'}</b><small>${sOn?'Power: '+pw.toFixed(1)+'% of full strength':'In shadow'}</small></div><div class="e1 m">${WED}<b>${eOn?'Moon eye open':'Moon eye closed'}</b><small>${eOn?'Can talk to Earth':'Earth hidden'}</small></div>`;
+ const[a,b]=$('e'+k).querySelectorAll('.eye');a.classList.toggle('open',sOn);b.classList.toggle('open',eOn);
+ const R=(l,v)=>`<div class="row"><span>${l}</span><b>${v}</b></div>`,mA=mask(hz,o.sA[i]),mE=mask(hz,o.eA[i]);
+ const M={sunNow:o.sE[i].toFixed(1)+'°',sunT:'Sun '+timer(o.sO,i,'sets','rises'),earT:'Earth '+timer(o.eO,i,'sets','rises'),sp:pct(o.sO),ep:pct(o.eO),dk:longest(o.sO,false),gp:longest(o.eO,false)};
+ SER[k].M=M;
+ $('m'+k).innerHTML=R('☀ Sun height',M.sunNow)+R('☀ Timer',M.sunT.replace('sets in','sunset in').replace('rises in','sunrise in'))+R('🌍 Timer',M.earT.replace('sets in','Earthset in').replace('rises in','Earthrise in'))
+  +R('Sunny share of 30 days',M.sp.toFixed(0)+'%')+R('Earth-in-view share',M.ep.toFixed(0)+'%')+R('Longest night',fd(M.dk))+R('Longest no-signal gap',fd(M.gp))
+  +(expert?R('Sun compass direction',o.sA[i].toFixed(0)+'°')+R('Skyline in Sun direction',mA.toFixed(2)+'°')+R('Sun above skyline by',(o.sE[i]+o.f[i].sr-mA).toFixed(2)+'°')+R('Earth height / skyline',o.eE[i].toFixed(2)+'° / '+mE.toFixed(2)+'°')+R('Earth disc / Sun disc',(2*o.f[i].er).toFixed(2)+'° / '+(2*o.f[i].sr).toFixed(2)+'°'):'');
+ pano(k,hz,o,i);tline(k,o,i)}
+function ymax(o){return Math.max(12,Math.min(90,Math.ceil(Math.max(...o.sE,...o.eE))+3))}
+function pano(k,hz,o,i){const c=$('pa'+k),g=c.getContext('2d'),W=c.width,H=c.height,y1=ymax(o),y0=-4,X=a=>a/360*W,Y=e=>H-(e-y0)/(y1-y0)*(H-16)-4;g.clearRect(0,0,W,H);
+ const sky=g.createLinearGradient(0,0,0,H);sky.addColorStop(0,'#05060c');sky.addColorStop(1,'#141a33');g.fillStyle=sky;g.fillRect(0,0,W,H);
+ g.fillStyle='#b9ab88';for(let j=0;j<N;j+=6){if(o.sE[j]>y0){g.fillStyle='rgba(255,201,74,.35)';g.fillRect(X(o.sA[j])-1,Y(o.sE[j])-1,3,3)}if(o.eE[j]>y0){g.fillStyle='rgba(90,162,255,.4)';g.fillRect(X(o.eA[j])-1,Y(o.eE[j])-1,3,3)}}
+ const body=(az,el,r,col,on)=>{g.beginPath();g.arc(X(az),Y(el),Math.max(6,r/(y1-y0)*H),0,7);g.fillStyle=col;g.globalAlpha=on?1:.35;g.shadowColor=col;g.shadowBlur=on?14:0;g.fill();g.globalAlpha=1;g.shadowBlur=0};
+ body(o.sA[i],o.sE[i],o.f[i].sr,'#ffc94a',o.sO[i]);body(o.eA[i],o.eE[i],o.f[i].er,'#5aa2ff',o.eO[i]);
+ g.beginPath();g.moveTo(0,H);for(let a=0;a<=360;a+=2)g.lineTo(X(a),Y(mask(hz,a)));g.lineTo(W,H);g.closePath();g.fillStyle='#2b2113';g.fill();g.strokeStyle='#e8b84a';g.lineWidth=1.5;g.stroke();
+ g.fillStyle='#a89a78';g.font='12px Outfit,sans-serif';[['N',0],['E',90],['S',180],['W',270]].forEach(([t,a])=>g.fillText(t,X(a)+(a?0:4),12));g.fillText('0° flat horizon',W-96,Y(0)-3);g.fillText(y1+'° up',4,26)}
+function tline(k,o,i){const c=$('tl'+k),g=c.getContext('2d'),W=c.width,H=c.height,y1=ymax(o),y0=-Math.min(10,y1),X=j=>j/N*W,Y=e=>(H-34)-(e-y0)/(y1-y0)*(H-44);g.clearRect(0,0,W,H);
+ g.strokeStyle='#a89a78';g.setLineDash([4,4]);g.beginPath();g.moveTo(0,Y(0));g.lineTo(W,Y(0));g.stroke();g.setLineDash([]);
+ [[o.sE,'#ffc94a'],[o.eE,'#5aa2ff']].forEach(([a,col])=>{g.beginPath();a.forEach((v,j)=>j?g.lineTo(X(j),Y(v)):g.moveTo(X(j),Y(v)));g.strokeStyle=col;g.lineWidth=2;g.stroke()});
+ [[o.sO,'#ffc94a',H-26],[o.eO,'#5aa2ff',H-14]].forEach(([a,col,y])=>{g.fillStyle='#241b0e';g.fillRect(0,y,W,9);g.fillStyle=col;a.forEach((v,j)=>{if(v)g.fillRect(X(j),y,Math.ceil(W/N),9)})});
+ g.fillStyle='#fff';g.fillRect(X(i)-1,0,2,H);g.fillStyle='#a89a78';g.font='12px Outfit,sans-serif';for(let d=0;d<=30;d+=5)g.fillText('day '+d,Math.min(X(d*24),W-40),12);
+ if(!c.dataset.on){c.dataset.on=1;c.addEventListener('click',e=>{const r=c.getBoundingClientRect();$('h'+k).value=Math.max(0,Math.min(N-1,Math.round((e.clientX-r.left)/r.width*N)));if($('link').checked&&k==='A')$('hB').value=$('hA').value;all()})}}
+function all(){render('A');render('B');const A=SER.A,B=SER.B;if(!A||!B)return;const a=A.M,b=B.M,r=(l,x,y,f)=>`<tr><td>${l}</td><td>${f(x)}</td><td>${f(y)}</td></tr>`;
+ $('cmp').innerHTML=`<table><tr><th></th><th>Site A</th><th>Site B</th></tr>`+r('Sun height now',a.sunNow,b.sunNow,x=>x)+r('Sunny share',a.sp,b.sp,x=>x.toFixed(0)+'%')+r('Earth-in-view share',a.ep,b.ep,x=>x.toFixed(0)+'%')+r('Longest night',a.dk,b.dk,fd)+r('Longest no-signal gap',a.gp,b.gp,fd)+`</table><p class="cap">${a.sp+a.ep>b.sp+b.ep?'Site A':a.sp+a.ep<b.sp+b.ep?'Site B':'Neither site'} has the better combined power-and-signal score in these 30 days.</p>`}
+$('mode').onclick=()=>{expert=!expert;$('mode').textContent=expert?'Show simple numbers':'Show expert numbers';all()};
+let playing=false,last=0,acc=0;$('play').onclick=()=>{playing=!playing;$('play').textContent=playing?'⏸ Pause':'▶ Play'};
+(function loop(t){requestAnimationFrame(loop);const dt=Math.min(.1,(t-last)/1e3);last=t;if(!playing)return;acc+=dt*+$('spd').value;if(acc>=1){const s=Math.floor(acc);acc-=s;['A','B'].forEach(k=>$('h'+k).value=(+$('h'+k).value+s)%N);all()}})(0);
+$('note').innerHTML='<b>How it works.</b> Sun and Earth positions come from the astronomy-engine ephemeris (JPL-family accuracy, about 1 arcminute) rotated into the Moon\'s own frame with the IAU 2009 pole and libration. Sunset uses the Sun\'s upper edge; Earthset uses Earth\'s center. There is no air on the Moon, so no refraction is applied. Terrain skylines come from <code>data/horizons.json</code>, built from LOLA by <code>build_horizons.py</code>; sites marked "placeholder" use invented skylines and are not for real planning. Validate against NASA Quickmap, Moon Trek and JPL Horizons.';
+try{all()}catch(e){$('note').textContent='Could not load the astronomy library. Check your connection and reload. '+e}
 </script></body></html>
