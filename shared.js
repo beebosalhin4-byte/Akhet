@@ -66,3 +66,5 @@ function startTour(steps){steps=steps.filter(s=>{const e=document.querySelector(
  addEventListener('resize',show2);addEventListener('keydown',key);show()}
 function helpInit(btn,steps){let seen=0;try{seen=localStorage.getItem('tourSeen')}catch(e){}if(!seen)btn.classList.add('pulse');
  btn.onclick=()=>{btn.classList.remove('pulse');try{localStorage.setItem('tourSeen','1')}catch(e){}startTour(steps())}}
+
+function fitCanvas(c,LW,LH){const dpr=Math.min(3,devicePixelRatio||1),w=c.clientWidth;if(!w)return null;const bw=Math.round(w*dpr),bh=Math.round(bw*LH/LW);if(c.width!==bw||c.height!==bh){c.width=bw;c.height=bh}c.style.aspectRatio=LW+'/'+LH;const g=c.getContext('2d');g.setTransform(bw/LW,0,0,bw/LW,0,0);return{g,W:LW,H:LH}}

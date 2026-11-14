@@ -23,10 +23,10 @@
 <div class="brand glass">
   <h1><span data-glyph></span>Two Eyes of Horus</h1>
   <p>Akhet, the horizon. Pick a south pole site and watch both eyes open and close.</p>
-  <p class="mini">📍 You have two landing spots to compare. Tap <b>A</b> or <b>B</b> to choose which one you are standing at.</p>
-  <div id="who"><button class="act kb" data-k="A" title="Stand at your first landing spot"><b><span class="ic">📍</span>Site A</b><small>Your first spot</small></button><button class="kb" data-k="B" title="Stand at your second landing spot"><b><span class="ic">📍</span>Site B</b><small>Your second spot</small></button></div>
-  <p class="mini">🌙 Pick a place on the Moon:</p><select id="site" aria-label="Choose a place on the Moon" title="Choose a place on the Moon"></select>
-  <div class="navbtns"><a href="planner.html" class="launch-btn kb" title="Compare many places and dates to find the best landing time"><b><span class="ic">🚀</span>Mission Planner</b><small>Compare places and dates</small></a><a id="modeLink" class="kb" title="Switch between one site and two sites"></a><button id="helpBtn" class="kb help" title="Show me around this page with arrows and tips"><b><span class="ic">❓</span>Help</b><small>Show me around</small></button></div>
+  <p class="mini">You have two landing spots to compare. Tap <b>A</b> or <b>B</b> to choose which one you are standing at.</p>
+  <div id="who"><button class="act kb" data-k="A" title="Stand at your first landing spot"><b>Site A</b><small>Your first spot</small></button><button class="kb" data-k="B" title="Stand at your second landing spot"><b>Site B</b><small>Your second spot</small></button></div>
+  <p class="mini">Pick a place on the Moon:</p><select id="site" aria-label="Choose a place on the Moon" title="Choose a place on the Moon"></select>
+  <div class="navbtns"><a href="planner.html" class="launch-btn kb" title="Compare many places and dates to find the best landing time"><b>Mission Planner</b><small>Compare places and dates</small></a><a id="modeLink" class="kb" title="Switch between one site and two sites"></a><button id="helpBtn" class="kb help" title="Show me around this page with arrows and tips"><b>Help</b><small>Show me around</small></button></div>
 </div>
 <div class="read glass">
 <div class="eyeblk sunEye"><span data-eye></span><div><h4>Sun eye</h4><em>Solar power</em><b id="pwr" class="st">-</b><small>Sun elevation <span id="sunEl">-</span></small></div></div>
@@ -36,17 +36,17 @@
 <div class="hint">Drag to look around. Sun and Earth are drawn 3× larger than real so you can see them.</div>
 <div class="ctl glass">
 <button id="play" class="kb" aria-label="Play or pause time" title="Start or stop the clock. Time moves on its own while playing."><b><span class="ic">▶</span>Play</b><small>Make time move</small></button>
-<label class="spdl" title="How fast time moves">⏱ Speed<select id="spd" aria-label="Speed of time" title="How fast time moves"><option value="3">🐢 Slow: 3 hours a second</option><option value="12" selected>🚶 Normal: 12 hours a second</option><option value="48">🐇 Fast: 2 days a second</option></select></label>
-<span class="tl">⏳ Drag to move time:</span><input type="range" id="slider" min="0" max="0" value="0" aria-label="Move through time" title="Drag left or right to move through time">
+<label class="spdl" title="How fast time moves">Speed<select id="spd" aria-label="Speed of time" title="How fast time moves"><option value="3">Slow: 3 hours a second</option><option value="12" selected>Normal: 12 hours a second</option><option value="48">Fast: 2 days a second</option></select></label>
+<span class="tl">Drag to move time:</span><input type="range" id="slider" min="0" max="0" value="0" aria-label="Move through time" title="Drag left or right to move through time">
 <span id="tlabel"></span>
-<button id="lookS" class="kb" title="Turn the camera to face the Sun"><b><span class="ic">☀️</span>Look at the Sun</b><small>Turn to face the Sun</small></button><button id="lookE" class="kb" title="Turn the camera to face the Earth"><b><span class="ic">🌍</span>Look at the Earth</b><small>Turn to face our home</small></button>
-<button id="nextS" class="kb" title="Jump forward in time to the next sunrise or sunset"><b><span class="ic">🌅</span>Next sunrise or sunset</b><small>Jump to when the Sun comes or goes</small></button><button id="nextE" class="kb" title="Jump forward in time to when Earth appears or hides"><b><span class="ic">📡</span>Next Earth in or out</b><small>Jump to when Earth shows or hides</small></button>
+<button id="lookS" class="kb" title="Turn the camera to face the Sun"><b>Look at the Sun</b><small>Turn to face the Sun</small></button><button id="lookE" class="kb" title="Turn the camera to face the Earth"><b>Look at the Earth</b><small>Turn to face our home</small></button>
+<button id="nextS" class="kb" title="Jump forward in time to the next sunrise or sunset"><b>Next sunrise or sunset</b><small>Jump to when the Sun comes or goes</small></button><button id="nextE" class="kb" title="Jump forward in time to when Earth appears or hides"><b>Next Earth in or out</b><small>Jump to when Earth shows or hides</small></button>
 </div></section>
 
 <main>
-<div class="bar glass"><label style="margin:0" title="When ticked, Site A and Site B always show the same date and time"><input type="checkbox" id="link"> 🔗 <b>Same time for both sites</b><span class="mini" style="display:block;margin:0">Tick this to make A and B move through time together.</span></label>
+<div class="bar glass"><label style="margin:0" title="When ticked, Site A and Site B always show the same date and time"><input type="checkbox" id="link"> <b>Same time for both sites</b><span class="mini" style="display:block;margin:0">Tick this to make A and B move through time together.</span></label>
 
-<button id="mode" class="kb" title="Switch between simple words and the detailed science numbers"><b><span class="ic">🔬</span>Show expert numbers</b><small>See the detailed science numbers</small></button></div>
+<button id="mode" class="kb" title="Switch between simple words and the detailed science numbers"><b>Show expert numbers</b><small>See the detailed science numbers</small></button></div>
 <div class="grid two" id="panels"></div>
 <div class="card glass" style="margin-top:14px"><h2>Side by side</h2><div id="cmp"></div></div>
 <div class="warn" id="note"></div>
@@ -181,16 +181,16 @@ if(VIEW3D){document.body.classList.add('v3');document.body.classList.remove('int
 else $('enter').onclick=()=>{document.body.classList.remove('intro');KT=performance.now();all()};
 const CMP=/[?&]mode=compare/.test(location.search),NO=e=>e&&(e.style.display='none');document.body.classList.add(CMP?'two':'one');
 if(!CMP){NO($('who'));NO($('who').previousElementSibling);NO($('link').closest('label'));NO($('cmp').closest('.card'))}
-$('modeLink').innerHTML=CMP?'<b><span class="ic">📍</span>One site</b><small>Look at a single place</small>':'<b><span class="ic">⚖️</span>Compare two sites</b><small>Two places, side by side</small>';$('modeLink').href=CMP?'index.html?go':'index.html?mode=compare';
-$('play').onclick=()=>{playing=!playing;$('play').innerHTML=playing?'<b><span class="ic">⏸</span>Pause</b><small>Stop the clock</small>':'<b><span class="ic">▶</span>Play</b><small>Make time move</small>'};
+$('modeLink').innerHTML=CMP?'<b>One site</b><small>Look at a single place</small>':'<b>Compare two sites</b><small>Two places, side by side</small>';$('modeLink').href=CMP?'index.html?go':'index.html?mode=compare';
+$('play').onclick=()=>{playing=!playing;$('play').innerHTML=playing?'<b>Pause</b><small>Stop the clock</small>':'<b><span class="ic">▶</span>Play</b><small>Make time move</small>'};
 $('slider').oninput=e=>{$('h'+HK).value=e.target.value;if($('link').checked&&HK==='A')$('hB').value=e.target.value;all()};
 $('site').onchange=e=>{$('s'+HK).value=e.target.value;all()};
 $('lookS').onclick=()=>look('S');$('lookE').onclick=()=>look('E');$('nextS').onclick=()=>jump('sO');$('nextE').onclick=()=>jump('eO');
 document.querySelectorAll('#who button').forEach(b=>b.onclick=()=>{HK=b.dataset.k;document.querySelectorAll('#who button').forEach(x=>x.classList.toggle('act',x===b));all();look('E')});
 let SER={},PS={};
-const panel=k=>`<section class="card glass pan"><h2>📍 Site ${k}</h2><p class="mini">Choose a place on the Moon:</p><select id="s${k}" aria-label="Site ${k}" title="Choose a place on the Moon"></select>
+const panel=k=>`<section class="card glass pan"><h2>Site ${k}</h2><p class="mini">Choose a place on the Moon:</p><select id="s${k}" aria-label="Site ${k}" title="Choose a place on the Moon"></select>
 <div class="cust" id="c${k}" hidden><label>Latitude° (south −)<input id="la${k}" type="number" step=".01" value="-85"></label><label>Longitude° (east +)<input id="lo${k}" type="number" step=".01" value="0"></label></div><div><span class="badge" id="b${k}"></span></div>
-<label>📅 Pick a date<input id="d${k}" type="date" title="Choose the day you want to look at"></label><label>⏳ Drag to move through the Moon day: <b id="t${k}"></b><input id="h${k}" type="range" min="0" max="${N-1}" value="0"></label>
+<label>Pick a date<input id="d${k}" type="date" title="Choose the day you want to look at"></label><label>Drag to move through the Moon day: <b id="t${k}"></b><input id="h${k}" type="range" min="0" max="${N-1}" value="0"></label>
 <div class="eyes" id="e${k}"></div><div id="m${k}"></div><p class="cap">Timers count Earth days (24 hours). One Moon day, sunrise to sunrise, lasts about 29.5 Earth days.</p>
 <canvas id="or${k}" height="300"></canvas><p class="cap">3D space map (not to scale): the Moon with the Sun (gold) and Earth (blue) in their true directions. Gold diamond = this site, red = the other site. Gold and blue lines turn bright when the Sun or Earth can be seen from the site. The far dots are the real planets Venus, Mars, Jupiter and Saturn. Drag to rotate.</p><canvas id="pa${k}" width="680" height="220"></canvas><p class="cap">Horizon map: drag left or right to turn all the way around. The dark shape is the skyline. Dots show where the Sun (gold) and Earth (blue) travel over about 30 days.</p>
 <canvas id="tl${k}" width="680" height="190"></canvas><p class="cap">Timeline: lines are heights above the flat horizon. Bars at the bottom are on when the Sun or Earth is above the skyline. Click to jump.</p></section>`;
@@ -210,13 +210,13 @@ function render(k){const id=$('s'+k).value,S=SITES.find(s=>s.id===id),cu=id==='c
  const R=(l,v)=>`<div class="m"><span>${l}</span><b>${v}</b></div>`,mA=mask(hz,o.sA[i]),mE=mask(hz,o.eA[i]);
  const M={sunNow:o.sE[i].toFixed(1)+'°',sunT:'Sun '+timer(o.sO,i,'sets','rises'),earT:'Earth '+timer(o.eO,i,'sets','rises'),sp:pct(o.sO),ep:pct(o.eO),dk:longest(o.sO,false),gp:longest(o.eO,false)};
  SER[k].M=M;
- $('m'+k).innerHTML=R('☀ Sun height',M.sunNow)+R('☀ Timer',M.sunT.replace('sets in','sunset in').replace('rises in','sunrise in'))+R('🌍 Timer',M.earT.replace('sets in','Earthset in').replace('rises in','Earthrise in'))
+ $('m'+k).innerHTML=R('Sun height',M.sunNow)+R('Timer',M.sunT.replace('sets in','sunset in').replace('rises in','sunrise in'))+R('Timer',M.earT.replace('sets in','Earthset in').replace('rises in','Earthrise in'))
   +R('Sunny share of 30 days',M.sp.toFixed(0)+'%')+R('Earth-in-view share',M.ep.toFixed(0)+'%')+R('Longest night',fd(M.dk))+R('Longest no-signal gap',fd(M.gp))
   +(expert?R('Sun compass direction',o.sA[i].toFixed(0)+'°')+R('Skyline in Sun direction',mA.toFixed(2)+'°')+R('Sun above skyline by',(o.sE[i]+o.f[i].sr-mA).toFixed(2)+'°')+R('Earth height / skyline',o.eE[i].toFixed(2)+'° / '+mE.toFixed(2)+'°')+R('Earth disc / Sun disc',(2*o.f[i].er).toFixed(2)+'° / '+(2*o.f[i].sr).toFixed(2)+'°'):'');
  pano(k,hz,o,i);tline(k,o,i);PS[k]={lat,lon};orr[k].upd(o,i,lat,lon,PS[k==='A'?'B':'A'])}
 function ymax(o){return Math.max(12,Math.min(90,Math.ceil(Math.max(...o.sE,...o.eE))+3))}
 const CEN={},FOV=120;
-function pano(k,hz,o,i){const c=$('pa'+k),g=c.getContext('2d'),W=c.width,H=c.height,y0=Math.min(-2,Math.floor(Math.min(...hz))-1),y1=Math.max(8,Math.ceil(Math.max(...hz)*1.8)+2);if(CEN[k]==null)CEN[k]=o.sA[i];const cen=CEN[k],dd=a=>((a-cen+540)%360)-180,X=a=>dd(a)/FOV*W+W/2,Y=e=>H-(Math.min(e,y1+1)-y0)/(y1-y0)*(H-22)-6,inV=a=>Math.abs(dd(a))<FOV/2+8;
+function pano(k,hz,o,i){const c=$('pa'+k),F=fitCanvas(c,680,220);if(!F)return;const g=F.g,W=F.W,H=F.H,y0=Math.min(-2,Math.floor(Math.min(...hz))-1),y1=Math.max(8,Math.ceil(Math.max(...hz)*1.8)+2);if(CEN[k]==null)CEN[k]=o.sA[i];const cen=CEN[k],dd=a=>((a-cen+540)%360)-180,X=a=>dd(a)/FOV*W+W/2,Y=e=>H-(Math.min(e,y1+1)-y0)/(y1-y0)*(H-22)-6,inV=a=>Math.abs(dd(a))<FOV/2+8;
  g.clearRect(0,0,W,H);const sky=g.createLinearGradient(0,0,0,H);sky.addColorStop(0,'#000');sky.addColorStop(1,'#0a0f1f');g.fillStyle=sky;g.fillRect(0,0,W,H);
  for(let q=0;q<110;q++){g.fillStyle='rgba(255,255,255,'+(.2+.6*((q*37)%10)/10)+')';g.fillRect((q*97)%W,(q*53)%(H-30),1.5,1.5)}
  for(let j=0;j<N;j+=6){if(o.sE[j]>y0&&inV(o.sA[j])){g.fillStyle='rgba(255,201,74,.4)';g.fillRect(X(o.sA[j])-1,Y(o.sE[j])-1,3,3)}if(o.eE[j]>y0&&inV(o.eA[j])){g.fillStyle='rgba(90,162,255,.45)';g.fillRect(X(o.eA[j])-1,Y(o.eE[j])-1,3,3)}}
@@ -226,7 +226,7 @@ function pano(k,hz,o,i){const c=$('pa'+k),g=c.getContext('2d'),W=c.width,H=c.hei
  g.fillStyle='#a89a78';g.font='12px Outfit,sans-serif';const n8=['N','NE','E','SE','S','SW','W','NW'];for(let a=0;a<360;a+=15){if(inV(a))g.fillText(a%45?a+'°':n8[a/45],X(a)-8,H-8)}
  g.fillText('◀ drag to turn around ▶',W/2-64,14);g.fillText('0° flat',W-48,Y(0)-3);
  if(!c.dataset.on){c.dataset.on=1;let d0=null;c.style.cursor='grab';c.onpointerdown=e=>{d0=e.clientX;c.setPointerCapture(e.pointerId)};c.onpointerup=()=>d0=null;c.onpointermove=e=>{if(d0==null)return;CEN[k]=(CEN[k]-(e.clientX-d0)/c.clientWidth*FOV+360)%360;d0=e.clientX;pano(k,SER[k].hz,SER[k],+$('h'+k).value)}}}
-function tline(k,o,i){const c=$('tl'+k),g=c.getContext('2d'),W=c.width,H=c.height,y1=ymax(o),y0=-Math.min(10,y1),X=j=>j/N*W,Y=e=>(H-34)-(e-y0)/(y1-y0)*(H-44);g.clearRect(0,0,W,H);
+function tline(k,o,i){const c=$('tl'+k),F=fitCanvas(c,680,190);if(!F)return;const g=F.g,W=F.W,H=F.H,y1=ymax(o),y0=-Math.min(10,y1),X=j=>j/N*W,Y=e=>(H-34)-(e-y0)/(y1-y0)*(H-44);g.clearRect(0,0,W,H);
  g.strokeStyle='#a89a78';g.setLineDash([4,4]);g.beginPath();g.moveTo(0,Y(0));g.lineTo(W,Y(0));g.stroke();g.setLineDash([]);
  [[o.sE,'#ffc94a'],[o.eE,'#5aa2ff']].forEach(([a,col])=>{g.beginPath();a.forEach((v,j)=>j?g.lineTo(X(j),Y(v)):g.moveTo(X(j),Y(v)));g.strokeStyle=col;g.lineWidth=2;g.stroke()});
  [[o.sO,'#ffc94a',H-26],[o.eO,'#5aa2ff',H-14]].forEach(([a,col,y])=>{g.fillStyle='#161b27';g.fillRect(0,y,W,9);g.fillStyle=col;a.forEach((v,j)=>{if(v)g.fillRect(X(j),y,Math.ceil(W/N),9)})});
@@ -234,26 +234,26 @@ function tline(k,o,i){const c=$('tl'+k),g=c.getContext('2d'),W=c.width,H=c.heigh
  if(!c.dataset.on){c.dataset.on=1;c.addEventListener('click',e=>{const r=c.getBoundingClientRect();$('h'+k).value=Math.max(0,Math.min(N-1,Math.round((e.clientX-r.left)/r.width*N)));if($('link').checked&&k==='A')$('hB').value=$('hA').value;all()})}}
 function all(){render('A');render('B');upd();const A=SER.A,B=SER.B;if(!A||!B)return;const a=A.M,b=B.M,r=(l,x,y,f)=>`<tr><td>${l}</td><td>${f(x)}</td><td>${f(y)}</td></tr>`;
  $('cmp').innerHTML=`<table><tr><th></th><th>Site A</th><th>Site B</th></tr>`+r('Sun height now',a.sunNow,b.sunNow,x=>x)+r('Sunny share',a.sp,b.sp,x=>x.toFixed(0)+'%')+r('Earth-in-view share',a.ep,b.ep,x=>x.toFixed(0)+'%')+r('Longest night',a.dk,b.dk,fd)+r('Longest no-signal gap',a.gp,b.gp,fd)+`</table><p class="cap">${a.sp+a.ep>b.sp+b.ep?'Site A':a.sp+a.ep<b.sp+b.ep?'Site B':'Neither site'} has the better combined power-and-signal score in these 30 days.</p>`}
-$('mode').onclick=()=>{expert=!expert;$('mode').innerHTML=expert?'<b><span class="ic">🙂</span>Show simple numbers</b><small>Go back to easy words</small>':'<b><span class="ic">🔬</span>Show expert numbers</b><small>See the detailed science numbers</small>';all()};
+$('mode').onclick=()=>{expert=!expert;$('mode').innerHTML=expert?'<b>Show simple numbers</b><small>Go back to easy words</small>':'<b>Show expert numbers</b><small>See the detailed science numbers</small>';all()};
 $('site').innerHTML=SITES.map(s=>`<option value="${s.id}">${s.n}</option>`).join('');$('slider').max=N-1;
 $('note').innerHTML='<b>How it works.</b> Sun and Earth positions come from the astronomy-engine ephemeris (JPL-family accuracy, about 1 arcminute) rotated into the Moon\'s own frame with the IAU 2009 pole and libration. Sunset uses the Sun\'s upper edge; Earthset uses Earth\'s center. There is no air on the Moon, so no refraction is applied. Terrain skylines are computed in your browser for any coordinates from LOLA topography (files made by <code>build_dem.py</code>, whole Moon plus a finer south-pole map): for each of 360 directions it looks out up to 200 km and keeps the highest angle, including the Moon\'s curved edge. Sites marked "placeholder" use invented skylines and are not for real planning. Validate against NASA Quickmap, Moon Trek and JPL Horizons.';
 try{all();look('E')}catch(e){$('note').textContent='Could not load the astronomy library. Check your connection and reload. '+e}
 
 helpInit($('helpBtn'),()=>[
-{sel:'a.launch-btn',title:'🚀 Mission Planner',text:'Press this to compare many landing places and dates, and find when both Eyes are open the most.'},
-{sel:'#modeLink',title:CMP?'📍 One site':'⚖️ Compare two sites',text:CMP?'Press this to go back to looking at just one place.':'Press this to look at two places side by side.'},
-{sel:'#site',title:'🌙 Pick a place',text:'Choose a place on the Moon. Everything on this page changes to match it.'},
-{sel:'#who',title:'📍 Site A and Site B',text:'Choose which of your two places you are standing at.'},
-{sel:'.read',title:'👁 The two Eyes',text:'Gold Sun eye: open when the Sun is above the skyline, so we have power. Blue Moon eye: open when Earth can be seen, so we can talk home.'},
-{sel:'.hint',title:'🖱 Look around',text:'Drag on the 3D picture to turn around. Sun and Earth are drawn bigger than real so you can find them.'},
+{sel:'a.launch-btn',title:'Mission Planner',text:'Press this to compare many landing places and dates, and find when both Eyes are open the most.'},
+{sel:'#modeLink',title:CMP?'One site':'Compare two sites',text:CMP?'Press this to go back to looking at just one place.':'Press this to look at two places side by side.'},
+{sel:'#site',title:'Pick a place',text:'Choose a place on the Moon. Everything on this page changes to match it.'},
+{sel:'#who',title:'Site A and Site B',text:'Choose which of your two places you are standing at.'},
+{sel:'.read',title:'The two Eyes',text:'Gold Sun eye: open when the Sun is above the skyline, so we have power. Blue Moon eye: open when Earth can be seen, so we can talk home.'},
+{sel:'.hint',title:'Look around',text:'Drag on the 3D picture to turn around. Sun and Earth are drawn bigger than real so you can find them.'},
 {sel:'#play',title:'▶ Play',text:'Makes time move by itself. Press again to pause.'},
-{sel:'#slider',title:'⏳ Time slider',text:'Drag left or right to jump to any moment. The date and time are shown next to it.'},
-{sel:'#lookS',title:'☀️ Look at the Sun',text:'Turns the camera to face the Sun.'},
-{sel:'#lookE',title:'🌍 Look at the Earth',text:'Turns the camera to face our home planet.'},
-{sel:'#nextS',title:'🌅 Next sunrise or sunset',text:'Jumps ahead to the next time the Sun comes up or goes down.'},
-{sel:'#nextE',title:'📡 Next Earth in or out',text:'Jumps ahead to the next time Earth appears or hides.'},
-{sel:'#link',title:'🔗 Same time',text:'Tick this so Site A and Site B move through time together.'},
-{sel:'#mode',title:'🔬 Expert numbers',text:'Shows the detailed science numbers. Percent means the share of time an Eye is open. Degrees (°) mean the height above the skyline, where 0° is the horizon.'},
-{sel:'#panels',title:'📊 Maps and numbers',text:'Below the 3D view: a map of where the Sun and Earth are in the sky, the skyline picture, and a timeline with its table. Colored means the Eye is open, dark means hidden.'},
-{sel:'#cmp',title:'⚖️ Side by side',text:'A table that compares your two places. Green is the best in each row.'}]);
+{sel:'#slider',title:'Time slider',text:'Drag left or right to jump to any moment. The date and time are shown next to it.'},
+{sel:'#lookS',title:'Look at the Sun',text:'Turns the camera to face the Sun.'},
+{sel:'#lookE',title:'Look at the Earth',text:'Turns the camera to face our home planet.'},
+{sel:'#nextS',title:'Next sunrise or sunset',text:'Jumps ahead to the next time the Sun comes up or goes down.'},
+{sel:'#nextE',title:'Next Earth in or out',text:'Jumps ahead to the next time Earth appears or hides.'},
+{sel:'#link',title:'Same time',text:'Tick this so Site A and Site B move through time together.'},
+{sel:'#mode',title:'Expert numbers',text:'Shows the detailed science numbers. Percent means the share of time an Eye is open. Degrees (°) mean the height above the skyline, where 0° is the horizon.'},
+{sel:'#panels',title:'Maps and numbers',text:'Below the 3D view: a map of where the Sun and Earth are in the sky, the skyline picture, and a timeline with its table. Colored means the Eye is open, dark means hidden.'},
+{sel:'#cmp',title:'Side by side',text:'A table that compares your two places. Green is the best in each row.'}]);
 </script></body></html>

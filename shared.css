@@ -83,3 +83,14 @@ a.kb{text-decoration:none;display:inline-flex}
 .tarr.up{top:-8px;border-right:0;border-bottom:0}.tarr.down{bottom:-8px;border-left:0;border-top:0}
 .help.pulse{animation:hp 1.4s infinite}@keyframes hp{50%{box-shadow:0 0 0 7px rgba(255,201,74,.35)}}
 .navbtns{display:flex;flex-direction:column;gap:8px;align-items:stretch}.navbtns .kb{width:100%}
+/* clearer intro text */
+.intro-ui{background:linear-gradient(180deg,rgba(5,7,13,0) 35%,rgba(5,7,13,.78) 100%)}
+.intro-ui h1{font-weight:700;color:#fff;text-shadow:0 2px 4px rgba(0,0,0,.9),0 4px 40px rgba(0,0,0,.85)}
+.story{padding:18px 26px;border-radius:18px;background:rgba(5,7,13,.62);border:1px solid rgba(255,255,255,.14);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);animation:fi 1.2s ease both;max-width:58ch}
+.intro-ui p{color:#fff;font-weight:400;font-size:clamp(17px,1.9vw,23px);line-height:1.5;text-shadow:0 1px 3px rgba(0,0,0,.9),0 2px 18px rgba(0,0,0,.7)}
+.story b{color:#ffd45e;font-weight:700}
+@keyframes fi{from{opacity:0}to{opacity:1}}
+#enter{background:rgba(5,7,13,.72);border:2px solid #ffd45e;color:#fff;font-weight:600;font-size:17px}
+#enter:hover{background:#ffd45e;color:#05070d}
+.enterhint{color:#fff!important;font-size:15px!important;font-weight:500;text-shadow:0 1px 4px rgba(0,0,0,.95),0 2px 16px rgba(0,0,0,.8)}
+.tag{color:#fff;font-weight:400;font-size:15px;text-shadow:0 1px 3px rgba(0,0,0,.95),0 2px 14px rgba(0,0,0,.9)}.tag b{font-weight:700;font-size:17px}.tag small{color:#fff}

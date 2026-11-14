@@ -16,21 +16,21 @@
 main section{margin-top:26px}.box{padding:14px 16px;margin:12px 0}.row input[type=number],.row input[type=text]{width:120px}
 .hdr .kb{padding:6px 14px}.hdr .kb small{max-width:none}.hdr .replay{font-size:13px}
 .row label{font-size:13px}.picks label{font-size:14px;min-height:34px}
-</style></head><body><script>onerror=function(m,u,l){document.body.insertAdjacentHTML("afterbegin","<div style=\"background:#5a1d18;color:#fff;padding:10px 16px;position:relative;z-index:99\">Something went wrong: "+m+" (line "+l+"). Please send this message to the developer.</div>")}</script><header class="hdr"><a class="logo" href="planner.html" title="Back to the top of the Mission Planner"><span data-glyph></span>TWO EYES OF HORUS</a><span style="color:var(--mut)">Mission Planner · build 7</span><a href="index.html" class="replay" title="Watch the Eyes of Horus story again">🎬 Replay the story</a><a href="index.html?go" class="launch-btn kb" title="Stand on the Moon at one site and look around in 3D"><b><span class="ic">🌙</span>One site in 3D</b><small>Stand there and look around</small></a><a href="index.html?mode=compare" class="kb" title="Look at two sites in 3D, side by side"><b><span class="ic">⚖️</span>Compare two sites</b><small>Two places in 3D</small></a><button id="helpBtn" class="kb help" title="Show me around this page with arrows and tips"><b><span class="ic">❓</span>Help</b><small>Show me around</small></button></header>
+</style></head><body><script>onerror=function(m,u,l){document.body.insertAdjacentHTML("afterbegin","<div style=\"background:#5a1d18;color:#fff;padding:10px 16px;position:relative;z-index:99\">Something went wrong: "+m+" (line "+l+"). Please send this message to the developer.</div>")}</script><header class="hdr"><a class="logo" href="planner.html" title="Back to the top of the Mission Planner"><span data-glyph></span>TWO EYES OF HORUS</a><span style="color:var(--mut)">Mission Planner · build 7</span><a href="index.html" class="replay" title="Watch the Eyes of Horus story again">Replay the story</a><a href="index.html?go" class="launch-btn kb" title="Stand on the Moon at one site and look around in 3D"><b>One site in 3D</b><small>Stand there and look around</small></a><a href="index.html?mode=compare" class="kb" title="Look at two sites in 3D, side by side"><b>Compare two sites</b><small>Two places in 3D</small></a><button id="helpBtn" class="kb help" title="Show me around this page with arrows and tips"><b>Help</b><small>Show me around</small></button></header>
 <main>
 <h2>Compare sites and dates fast</h2>
 <p class="sub">Pick landing sites and a start date. For every hour of the mission the planner asks two questions: can the Sun be seen above the local skyline (power), and can Earth be seen (a direct line home)? When both answers are yes, both Eyes of Horus are open.</p>
-<section class="glass box"><div class="row"><label>📅 Start date (when do we land?)<input type="date" id="start" title="The day the mission starts"></label><label>⏱ How many days we stay<input type="number" id="len" value="14" min="1" max="60" title="Number of Earth days"></label><label>🏆 Which site is best? Choose the rule<select id="crit" title="Choose how to decide the winner"></select></label><button id="go" class="kb go" title="Work out the best site for these dates"><b><span class="ic">▶</span>Compute</b><small>Find the best site</small></button></div>
-<p class="mini">✅ Tick the landing sites you want to compare:</p><div class="picks" id="pick"></div>
-<div class="row"><label>🧭 Add your own place: latitude (south is −)<input type="number" id="clat" step=".01" value="-86"></label><label>🧭 longitude (east is +)<input type="number" id="clon" step=".01" value="20"></label><label>✏️ Give it a name<input type="text" id="cname" placeholder="My site"></label><button id="cadd" class="kb" title="Put your own place on the list"><b><span class="ic">➕</span>Add my place</b><small>Put it on the list</small></button></div></section>
+<section class="glass box"><div class="row"><label>Start date (when do we land?)<input type="date" id="start" title="The day the mission starts"></label><label>How many days we stay<input type="number" id="len" value="14" min="1" max="60" title="Number of Earth days"></label><label>Which site is best? Choose the rule<select id="crit" title="Choose how to decide the winner"></select></label><button id="go" class="kb go" title="Work out the best site for these dates"><b><span class="ic">▶</span>Compute</b><small>Find the best site</small></button></div>
+<p class="mini">Tick the landing sites you want to compare:</p><div class="picks" id="pick"></div>
+<div class="row"><label>Add your own place: latitude (south is −)<input type="number" id="clat" step=".01" value="-86"></label><label>longitude (east is +)<input type="number" id="clon" step=".01" value="20"></label><label>Give it a name<input type="text" id="cname" placeholder="My site"></label><button id="cadd" class="kb" title="Put your own place on the list"><b>Add my place</b><small>Put it on the list</small></button></div></section>
 <section class="glass box" id="best"></section>
 <section><h2>Side by side</h2><p class="sub">Green numbers are the best in each row. Bars: gold = Sun, blue = Earth, green = both together.</p><div class="wrap"><table class="tbl" id="cmpT"></table></div><div class="wrap"><canvas id="cmpC"></canvas></div></section>
 <section><h2>Timeline of every site</h2><p class="sub">One row per site and per eye. Colored = visible, dark = hidden. Time runs left to right across the mission.</p><div class="wrap"><canvas id="stripC"></canvas></div></section>
 <section><h2>Same site, different dates</h2><p class="sub">The launch slipped? Pick one site and up to three start dates to see how much changes.</p>
-<div class="row"><label>📍 Place<select id="tsite"></select></label><label>📅 Date A<input type="date" id="pa"></label><label>📅 Date B<input type="date" id="pb"></label><label>📅 Date C<input type="date" id="pc"></label><label>⏱ Days we stay<input type="number" id="tlen" value="14" min="1" max="60"></label><button id="tgo" class="kb go" title="See what changes if we launch on different days"><b><span class="ic">📅</span>Compare dates</b><small>What if we launch later?</small></button></div>
+<div class="row"><label>Place<select id="tsite"></select></label><label>Date A<input type="date" id="pa"></label><label>Date B<input type="date" id="pb"></label><label>Date C<input type="date" id="pc"></label><label>Days we stay<input type="number" id="tlen" value="14" min="1" max="60"></label><button id="tgo" class="kb go" title="See what changes if we launch on different days"><b>Compare dates</b><small>What if we launch later?</small></button></div>
 <div class="wrap"><table class="tbl" id="timeT"></table></div><div class="wrap"><canvas id="timeC" style="display:none"></canvas></div></section>
 <section><h2>Find the best landing window</h2><p class="sub">Tries every start date in a range, for every site, and shows when both eyes stay open the longest.</p>
-<div class="row"><label>📅 First start date<input type="date" id="sfrom"></label><label>🔎 How many days to search<input type="number" id="srange" value="90" min="5" max="365"></label><label>⏱ Days we stay<input type="number" id="slen" value="14" min="1" max="60"></label><button id="sgo" class="kb go" title="Try every start day and show the best landing days"><b><span class="ic">🔍</span>Search</b><small>Find the best days to land</small></button></div>
+<div class="row"><label>First start date<input type="date" id="sfrom"></label><label>How many days to search<input type="number" id="srange" value="90" min="5" max="365"></label><label>Days we stay<input type="number" id="slen" value="14" min="1" max="60"></label><button id="sgo" class="kb go" title="Try every start day and show the best landing days"><b>Search</b><small>Find the best days to land</small></button></div>
 <div id="scanOut"></div></section>
 <div class="warn" id="warn"></div></main><script src="shared.js"></script>
 <script>
@@ -100,17 +100,17 @@ const today=new Date().toISOString().slice(0,10);$('start').value=today;$('pa').
 picks(true);run();
 
 helpInit($('helpBtn'),()=>[
-{sel:'.hdr .launch-btn',title:'🌙 One site in 3D',text:'Press this to stand on the Moon at one place and watch the Sun and Earth.'},
-{sel:'.hdr a[href*=compare]',title:'⚖️ Compare two sites',text:'Press this to see two places in 3D, side by side.'},
-{sel:'#start',title:'📅 Start date',text:'The day the mission starts. Pick the day you want to land.'},
-{sel:'#len',title:'⏱ Days we stay',text:'How many Earth days the mission lasts.'},
-{sel:'#crit',title:'🏆 Which site is best?',text:'Choose the rule that decides the winner, for example most power or best link to Earth.'},
-{sel:'#pick',title:'✅ Choose places',text:'Tick the landing sites you want to compare.'},
-{sel:'#cadd',title:'➕ Add my place',text:'Type latitude and longitude above to add your own place to the list. South latitude is minus (−), east longitude is plus (+).'},
+{sel:'.hdr .launch-btn',title:'One site in 3D',text:'Press this to stand on the Moon at one place and watch the Sun and Earth.'},
+{sel:'.hdr a[href*=compare]',title:'Compare two sites',text:'Press this to see two places in 3D, side by side.'},
+{sel:'#start',title:'Start date',text:'The day the mission starts. Pick the day you want to land.'},
+{sel:'#len',title:'Days we stay',text:'How many Earth days the mission lasts.'},
+{sel:'#crit',title:'Which site is best?',text:'Choose the rule that decides the winner, for example most power or best link to Earth.'},
+{sel:'#pick',title:'Choose places',text:'Tick the landing sites you want to compare.'},
+{sel:'#cadd',title:'Add my place',text:'Type latitude and longitude above to add your own place to the list. South latitude is minus (−), east longitude is plus (+).'},
 {sel:'#go',title:'▶ Compute',text:'Press this to find the best site. The winner, a table and pictures appear below.'},
-{sel:'#best',title:'🏆 The winner',text:'The best site for your rule. Percent numbers show how much of the time an Eye is open. Higher is better.'},
-{sel:'#cmpT',title:'📊 Side by side',text:'Green numbers are the best in each row. Gold = Sun, blue = Earth, green = both together.'},
-{sel:'#stripC',title:'🟨 Timeline',text:'One row per site. Colored means the Eye is open at that hour, dark means hidden. Time runs left to right.'},
-{sel:'#tsite',title:'📍 Same site, other dates',text:'What if the launch slipped? Pick one place and up to three start dates, then press Compare dates.'},
-{sel:'#sgo',title:'🔎 Best landing window',text:'Tries every start day in a range for every site and tells you the best and worst time to land.'}]);
+{sel:'#best',title:'The winner',text:'The best site for your rule. Percent numbers show how much of the time an Eye is open. Higher is better.'},
+{sel:'#cmpT',title:'Side by side',text:'Green numbers are the best in each row. Gold = Sun, blue = Earth, green = both together.'},
+{sel:'#stripC',title:'Timeline',text:'One row per site. Colored means the Eye is open at that hour, dark means hidden. Time runs left to right.'},
+{sel:'#tsite',title:'Same site, other dates',text:'What if the launch slipped? Pick one place and up to three start dates, then press Compare dates.'},
+{sel:'#sgo',title:'Best landing window',text:'Tries every start day in a range for every site and tells you the best and worst time to land.'}]);
 </script></body></html>
