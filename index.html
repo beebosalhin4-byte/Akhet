@@ -65,7 +65,7 @@ body:not(.intro) .tag{opacity:0}
 
 .bar{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin:10px 0;padding:12px 14px}.grid.two{grid-template-columns:repeat(auto-fit,minmax(360px,1fr))}.pan h2{margin-top:0}
 .badge{display:inline-block;font-size:12px;padding:1px 9px;border-radius:99px;margin:6px 0}.real{background:rgba(79,208,138,.18);color:var(--ok)}.fake{background:rgba(255,107,94,.18);color:var(--bad)}
-.cust{display:flex;gap:8px}.cust input{width:100%}.pan label{display:block;color:var(--mut);font-size:12px;margin-top:8px}.pan input[type=range]{width:100%;accent-color:var(--sun);padding:0}
+.cust{display:flex;gap:8px}.cust[hidden]{display:none}.cust input{width:100%}.pan label{display:block;color:var(--mut);font-size:12px;margin-top:8px}.pan input[type=range]{width:100%;accent-color:var(--sun);padding:0}
 .pan canvas{width:100%;margin-top:10px;border-radius:10px;background:#04060b;border:1px solid var(--line)}.cap{color:var(--mut);font-size:12px;margin:6px 0 0}.eyes{display:flex;gap:10px;margin:8px 0}.e1 small{color:var(--mut)}
 table{width:100%;border-collapse:collapse}td,th{padding:5px 8px;border-bottom:1px solid var(--line);text-align:right}th:first-child,td:first-child{text-align:left}
 details{margin:8px 0}summary{cursor:pointer;color:var(--sun)}details p{color:var(--mut);margin:6px 0}
@@ -178,8 +178,8 @@ const stars=(()=>{const p=[],c=[];for(let i=0;i<3500;i++){const u=rnd()*2-1,t=rn
  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(p,3));g.setAttribute('color',new THREE.Float32BufferAttribute(c,3));
  return new THREE.Points(g,new THREE.PointsMaterial({size:2.1,vertexColors:true,sizeAttenuation:false,fog:false}))})();scene.add(stars);
 const sunL=new THREE.DirectionalLight(0xfff2dd,0),amb=new THREE.AmbientLight(0x4a5a78,.25);scene.add(sunL,amb);
-const ground=new THREE.Mesh(new THREE.CircleGeometry(800,64),new THREE.MeshLambertMaterial({map:soilT}));ground.rotation.x=-Math.PI/2;scene.add(ground);
-const ridge=new THREE.Mesh(new THREE.BufferGeometry(),new THREE.MeshLambertMaterial({color:0x7a7872,side:THREE.DoubleSide}));scene.add(ridge);
+const ground=new THREE.Mesh(new THREE.CircleGeometry(800,64),new THREE.MeshLambertMaterial({map:soilT,emissive:0x0e121c}));ground.rotation.x=-Math.PI/2;scene.add(ground);
+const ridge=new THREE.Mesh(new THREE.BufferGeometry(),new THREE.MeshLambertMaterial({color:0x7a7872,emissive:0x1a2030,side:THREE.DoubleSide}));scene.add(ridge);
 function buildRidge(s){const p=[],ix=[];for(let a=0;a<=360;a++){const h=Math.tan(mask(s,a%360)*D)*800,x=800*Math.sin(a*D),z=-800*Math.cos(a*D);p.push(x,-40,z,x,h,z);if(a){const k=(a-1)*2;ix.push(k,k+1,k+2,k+1,k+3,k+2)}}
  ridge.geometry.dispose();const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(p,3));g.setIndex(ix);g.computeVertexNormals();ridge.geometry=g}
 const mkS=(m,s)=>{const o=new THREE.Sprite(new THREE.SpriteMaterial({map:glowT,color:0xffffff,blending:THREE.AdditiveBlending,depthWrite:false,fog:false,...m}));o.scale.set(s,s,1);scene.add(o);return o};
@@ -292,7 +292,7 @@ const panel=k=>`<section class="card glass pan"><h2>Site ${k}</h2><select id="s$
 <div class="cust" id="c${k}" hidden><label>Latitude° (south −)<input id="la${k}" type="number" step=".01" value="-85"></label><label>Longitude° (east +)<input id="lo${k}" type="number" step=".01" value="0"></label></div><div><span class="badge" id="b${k}"></span></div>
 <label>Date<input id="d${k}" type="date"></label><label>Moment in the Moon day: <b id="t${k}"></b><input id="h${k}" type="range" min="0" max="${N-1}" value="0"></label>
 <div class="eyes" id="e${k}"></div><div id="m${k}"></div><p class="cap">Timers count Earth days (24 hours). One Moon day, sunrise to sunrise, lasts about 29.5 Earth days.</p>
-<canvas id="or${k}" height="300"></canvas><p class="cap">3D space map (not to scale): the Moon with the Sun (gold) and Earth (blue) in their true directions. Gold diamond = this site, red = the other site. Gold and blue lines turn bright when the Sun or Earth can be seen from the site. The far dots are the real planets Venus, Mars, Jupiter and Saturn. Drag to rotate.</p><canvas id="pa${k}" width="680" height="220"></canvas><p class="cap">Horizon map: the skyline all around you (N, E, S, W). Dots show where the Sun (gold) and Earth (blue) travel over about 30 days.</p>
+<canvas id="or${k}" height="300"></canvas><p class="cap">3D space map (not to scale): the Moon with the Sun (gold) and Earth (blue) in their true directions. Gold diamond = this site, red = the other site. Gold and blue lines turn bright when the Sun or Earth can be seen from the site. The far dots are the real planets Venus, Mars, Jupiter and Saturn. Drag to rotate.</p><canvas id="pa${k}" width="680" height="220"></canvas><p class="cap">Horizon map: drag left or right to turn all the way around. The dark shape is the skyline. Dots show where the Sun (gold) and Earth (blue) travel over about 30 days.</p>
 <canvas id="tl${k}" width="680" height="190"></canvas><p class="cap">Timeline: lines are heights above the flat horizon. Bars at the bottom are on when the Sun or Earth is above the skyline. Click to jump.</p></section>`;
 $('panels').innerHTML=panel('A')+panel('B');const orr={A:mkOrr('A'),B:mkOrr('B')};
 const today=new Date().toISOString().slice(0,10);
@@ -315,13 +315,17 @@ function render(k){const id=$('s'+k).value,S=SITES.find(s=>s.id===id),cu=id==='c
   +(expert?R('Sun compass direction',o.sA[i].toFixed(0)+'°')+R('Skyline in Sun direction',mA.toFixed(2)+'°')+R('Sun above skyline by',(o.sE[i]+o.f[i].sr-mA).toFixed(2)+'°')+R('Earth height / skyline',o.eE[i].toFixed(2)+'° / '+mE.toFixed(2)+'°')+R('Earth disc / Sun disc',(2*o.f[i].er).toFixed(2)+'° / '+(2*o.f[i].sr).toFixed(2)+'°'):'');
  pano(k,hz,o,i);tline(k,o,i);PS[k]={lat,lon};orr[k].upd(o,i,lat,lon,PS[k==='A'?'B':'A'])}
 function ymax(o){return Math.max(12,Math.min(90,Math.ceil(Math.max(...o.sE,...o.eE))+3))}
-function pano(k,hz,o,i){const c=$('pa'+k),g=c.getContext('2d'),W=c.width,H=c.height,y1=ymax(o),y0=-4,X=a=>a/360*W,Y=e=>H-(e-y0)/(y1-y0)*(H-16)-4;g.clearRect(0,0,W,H);
- const sky=g.createLinearGradient(0,0,0,H);sky.addColorStop(0,'#000');sky.addColorStop(1,'#0a0f1f');g.fillStyle=sky;g.fillRect(0,0,W,H);for(let q=0;q<110;q++){g.fillStyle='rgba(255,255,255,'+(.2+.6*((q*37)%10)/10)+')';g.fillRect((q*97)%W,(q*53)%(H-30),1.5,1.5)}
- g.fillStyle='#b9ab88';for(let j=0;j<N;j+=6){if(o.sE[j]>y0){g.fillStyle='rgba(255,201,74,.35)';g.fillRect(X(o.sA[j])-1,Y(o.sE[j])-1,3,3)}if(o.eE[j]>y0){g.fillStyle='rgba(90,162,255,.4)';g.fillRect(X(o.eA[j])-1,Y(o.eE[j])-1,3,3)}}
- const body=(az,el,r,col,on)=>{g.beginPath();g.arc(X(az),Y(el),Math.max(6,r/(y1-y0)*H),0,7);g.fillStyle=col;g.globalAlpha=on?1:.35;g.shadowColor=col;g.shadowBlur=on?14:0;g.fill();g.globalAlpha=1;g.shadowBlur=0};
- body(o.sA[i],o.sE[i],o.f[i].sr,'#ffc94a',o.sO[i]);body(o.eA[i],o.eE[i],o.f[i].er,'#5aa2ff',o.eO[i]);
- g.beginPath();g.moveTo(0,H);for(let a=0;a<=360;a+=2)g.lineTo(X(a),Y(mask(hz,a)));g.lineTo(W,H);g.closePath();g.fillStyle='#15171d';g.fill();g.strokeStyle='#6d768a';g.lineWidth=1.5;g.stroke();
- g.fillStyle='#a89a78';g.font='12px Outfit,sans-serif';[['N',0],['E',90],['S',180],['W',270]].forEach(([t,a])=>g.fillText(t,X(a)+(a?0:4),12));g.fillText('0° flat horizon',W-96,Y(0)-3);g.fillText(y1+'° up',4,26)}
+const CEN={},FOV=120;
+function pano(k,hz,o,i){const c=$('pa'+k),g=c.getContext('2d'),W=c.width,H=c.height,y0=-2,y1=Math.max(8,Math.ceil(Math.max(...hz)*1.8)+2);if(CEN[k]==null)CEN[k]=o.sA[i];const cen=CEN[k],dd=a=>((a-cen+540)%360)-180,X=a=>dd(a)/FOV*W+W/2,Y=e=>H-(Math.min(e,y1+1)-y0)/(y1-y0)*(H-22)-6,inV=a=>Math.abs(dd(a))<FOV/2+8;
+ g.clearRect(0,0,W,H);const sky=g.createLinearGradient(0,0,0,H);sky.addColorStop(0,'#000');sky.addColorStop(1,'#0a0f1f');g.fillStyle=sky;g.fillRect(0,0,W,H);
+ for(let q=0;q<110;q++){g.fillStyle='rgba(255,255,255,'+(.2+.6*((q*37)%10)/10)+')';g.fillRect((q*97)%W,(q*53)%(H-30),1.5,1.5)}
+ for(let j=0;j<N;j+=6){if(o.sE[j]>y0&&inV(o.sA[j])){g.fillStyle='rgba(255,201,74,.4)';g.fillRect(X(o.sA[j])-1,Y(o.sE[j])-1,3,3)}if(o.eE[j]>y0&&inV(o.eA[j])){g.fillStyle='rgba(90,162,255,.45)';g.fillRect(X(o.eA[j])-1,Y(o.eE[j])-1,3,3)}}
+ const body=(az,el,r,col,on,lab)=>{if(!inV(az))return;g.beginPath();g.arc(X(az),Y(el),Math.max(6,r/(y1-y0)*(H-22)),0,7);g.fillStyle=col;g.globalAlpha=on?1:.35;g.shadowColor=col;g.shadowBlur=on?16:0;g.fill();g.globalAlpha=1;g.shadowBlur=0;if(el>y1){g.fillStyle=col;g.font='12px Outfit,sans-serif';g.fillText(lab+' '+el.toFixed(0)+'° up ↑',X(az)+10,16)}};
+ body(o.sA[i],o.sE[i],o.f[i].sr,'#ffc94a',o.sO[i],'Sun');body(o.eA[i],o.eE[i],o.f[i].er,'#5aa2ff',o.eO[i],'Earth');
+ g.beginPath();g.moveTo(0,H);for(let d=-FOV/2;d<=FOV/2;d+=1){const a=cen+d;g.lineTo((d/FOV+.5)*W,Y(mask(hz,((a%360)+360)%360)))}g.lineTo(W,H);g.closePath();g.fillStyle='#15171d';g.fill();g.strokeStyle='#6d768a';g.lineWidth=1.5;g.stroke();
+ g.fillStyle='#a89a78';g.font='12px Outfit,sans-serif';const n8=['N','NE','E','SE','S','SW','W','NW'];for(let a=0;a<360;a+=15){if(inV(a))g.fillText(a%45?a+'°':n8[a/45],X(a)-8,H-8)}
+ g.fillText('◀ drag to turn around ▶',W/2-64,14);g.fillText('0° flat',W-48,Y(0)-3);
+ if(!c.dataset.on){c.dataset.on=1;let d0=null;c.style.cursor='grab';c.onpointerdown=e=>{d0=e.clientX;c.setPointerCapture(e.pointerId)};c.onpointerup=()=>d0=null;c.onpointermove=e=>{if(d0==null)return;CEN[k]=(CEN[k]-(e.clientX-d0)/c.clientWidth*FOV+360)%360;d0=e.clientX;pano(k,SER[k].hz,SER[k],+$('h'+k).value)}}}
 function tline(k,o,i){const c=$('tl'+k),g=c.getContext('2d'),W=c.width,H=c.height,y1=ymax(o),y0=-Math.min(10,y1),X=j=>j/N*W,Y=e=>(H-34)-(e-y0)/(y1-y0)*(H-44);g.clearRect(0,0,W,H);
  g.strokeStyle='#a89a78';g.setLineDash([4,4]);g.beginPath();g.moveTo(0,Y(0));g.lineTo(W,Y(0));g.stroke();g.setLineDash([]);
  [[o.sE,'#ffc94a'],[o.eE,'#5aa2ff']].forEach(([a,col])=>{g.beginPath();a.forEach((v,j)=>j?g.lineTo(X(j),Y(v)):g.moveTo(X(j),Y(v)));g.strokeStyle=col;g.lineWidth=2;g.stroke()});
