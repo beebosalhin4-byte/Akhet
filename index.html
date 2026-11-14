@@ -55,8 +55,18 @@ const SITES=[{id:'mal',n:'Malapert Massif (south pole)',lat:-85.99,lon:.12},{id:
 {id:'a15',n:'Apollo 15 (Hadley)',lat:26.13,lon:3.63},{id:'a11',n:'Apollo 11 (Tranquility)',lat:.67,lon:23.47},{id:'cus',n:'Custom coordinates…',lat:-85,lon:0}];
 const hzg=(b,a,p)=>Array.from({length:360},(_,i)=>{const t=i*D;return Math.max(0,b+a*(.5*Math.sin(3*t+p)+.3*Math.sin(7*t+2*p)+.2*Math.sin(13*t+3*p)))});
 const PH={mal:hzg(1.2,1.6,0),hay:hzg(2.2,2.4,1),nob:hzg(1.8,2,2),con:hzg(.9,1.2,3),sha:hzg(1.6,1.8,4),cha:hzg(.5,.8,5),a15:hzg(1,1.5,6),a11:Array(360).fill(0)};
-let HZ={};fetch('data/horizons.json').then(r=>r.json()).then(j=>{HZ=j;all()}).catch(()=>{});
-const hzOf=id=>HZ[id]||PH[id]||Array(360).fill(0);
+/* ---- LOLA terrain: loaded once, then a skyline is computed for ANY lat/lon in the browser (~20 ms) ---- */
+const RM=1737400;let DEM={},HZC={};
+async function ld(u){const r=await fetch(u);if(!r.ok)throw 0;return new Int16Array(await new Response(r.body.pipeThrough(new DecompressionStream('gzip'))).arrayBuffer())}
+fetch('data/dem_meta.json').then(r=>r.json()).then(async m=>{DEM={...m};DEM.g=await ld('data/dem_global.bin.gz');try{DEM.s=await ld('data/dem_south.bin.gz')}catch(e){}HZC={};all()}).catch(()=>{});
+function bil(a,w,h,x,y,wrap){const x0=Math.floor(x),y0=Math.floor(y),fx=x-x0,fy=y-y0,X=i=>wrap?(i%w+w)%w:Math.max(0,Math.min(w-1,i)),Y=j=>Math.max(0,Math.min(h-1,j));
+return a[Y(y0)*w+X(x0)]*(1-fx)*(1-fy)+a[Y(y0)*w+X(x0+1)]*fx*(1-fy)+a[Y(y0+1)*w+X(x0)]*(1-fx)*fy+a[Y(y0+1)*w+X(x0+1)]*fx*fy}
+function hgt(la,lo){if(DEM.s&&la<-80*D){const r=2*RM*Math.tan((Math.PI/2+la)/2);return .5*bil(DEM.s,DEM.pn,DEM.pn,(DEM.pn-1)/2+r*Math.sin(lo)/DEM.pm,(DEM.pn-1)/2-r*Math.cos(lo)/DEM.pm)}
+ return .5*bil(DEM.g,DEM.gw,DEM.gh,((lo/D%360+360)%360)*DEM.gp-.5,(90-la/D)*DEM.gp-.5,true)}
+function skyline(lat,lon){const la=lat*D,lo=lon*D,h0=hgt(la,lo)+2,th=[],out=[];for(let d=.5;d<=30;d+=.5)th.push(d*1e3/RM);for(let d=32;d<=200;d+=2)th.push(d*1e3/RM);
+ for(let a=0;a<360;a++){const az=a*D;let best=0;for(const t of th){const ct=Math.cos(t),st=Math.sin(t),l2=Math.asin(Math.sin(la)*ct+Math.cos(la)*st*Math.cos(az)),o2=lo+Math.atan2(Math.sin(az)*st*Math.cos(la),ct-Math.sin(la)*Math.sin(l2)),z=hgt(l2,o2),
+  el=Math.atan2((RM+z)*ct-(RM+h0),(RM+z)*st)/D;if(el>best)best=el}out.push(best)}return out}
+const hzFor=(id,lat,lon)=>{if(!DEM.g)return PH[id]||Array(360).fill(0);const k=lat.toFixed(3)+','+lon.toFixed(3);return HZC[k]||(HZC[k]=skyline(lat,lon))};
 /* ---- math: JPL-family ephemeris (astronomy-engine) + IAU 2009 Moon orientation ---- */
 const rz=(v,a)=>{const c=Math.cos(a),s=Math.sin(a);return[c*v[0]+s*v[1],-s*v[0]+c*v[1],v[2]]},rx=(v,a)=>{const c=Math.cos(a),s=Math.sin(a);return[v[0],c*v[1]+s*v[2],-s*v[1]+c*v[2]]};
 const nm=a=>{const l=Math.hypot(...a);return a.map(v=>v/l)},dot=(a,b)=>a[0]*b[0]+a[1]*b[1]+a[2]*b[2];
@@ -91,10 +101,10 @@ const today=new Date().toISOString().slice(0,10);
  ['s','la','lo','d','h'].forEach(p=>$(p+k).addEventListener('input',()=>{if($('link').checked&&k==='A'){$('dB').value=$('dA').value;$('hB').value=$('hA').value}n?render('B'):all()}))});
 function render(k){const id=$('s'+k).value,S=SITES.find(s=>s.id===id),cu=id==='cus';$('c'+k).hidden=!cu;
  const lat=Math.max(-89.99,Math.min(89.99,cu?+$('la'+k).value:S.lat)),lon=cu?+$('lo'+k).value:S.lon,t0=Date.parse($('d'+k).value+'T00:00:00Z'),i=+$('h'+k).value;if(isNaN(t0)||isNaN(lat)||isNaN(lon))return;
- const real=!!HZ[id],hz=hzOf(id),key=[id,lat,lon,t0,real].join();
+ const real=!!DEM.g,hz=hzFor(id,lat,lon),key=[id,lat,lon,t0,real].join();
  if(!SER[k]||SER[k].key!==key){const f=frames(t0),o={key,sE:[],sA:[],eE:[],eA:[],sO:[],eO:[],f};for(const x of f){const a=azel(x.s,lat,lon),b=azel(x.e,lat,lon);o.sE.push(a.el);o.sA.push(a.az);o.eE.push(b.el);o.eA.push(b.az);o.sO.push(a.el+x.sr>mask(hz,a.az));o.eO.push(b.el>mask(hz,b.az))}SER[k]=o}
  const o=SER[k],t=new Date(t0+i*36e5);$('t'+k).textContent=t.toISOString().slice(0,16).replace('T',' ')+' UTC (day '+(i/24).toFixed(1)+')';
- $('b'+k).className='badge '+(real?'real':'fake');$('b'+k).textContent=real?'Terrain: real LOLA horizon':id==='cus'?'Terrain: flat horizon assumed':'Terrain: placeholder (run the LOLA script)';
+ $('b'+k).className='badge '+(real?'real':'fake');$('b'+k).textContent=real?'Terrain: real LOLA skyline'+(DEM.s?'':' (coarse, no polar map)'):id==='cus'?'Terrain: flat horizon assumed (terrain files not loaded)':'Terrain: placeholder (terrain files not loaded)';
  const sOn=o.sO[i],eOn=o.eO[i],pw=sOn?Math.sin(Math.max(0,o.sE[i])*D)*100:0;
  $('e'+k).innerHTML=`<div class="e1 s">${WED}<b>${sOn?'Sun eye open':'Sun eye closed'}</b><small>${sOn?'Power: '+pw.toFixed(1)+'% of full strength':'In shadow'}</small></div><div class="e1 m">${WED}<b>${eOn?'Moon eye open':'Moon eye closed'}</b><small>${eOn?'Can talk to Earth':'Earth hidden'}</small></div>`;
  const[a,b]=$('e'+k).querySelectorAll('.eye');a.classList.toggle('open',sOn);b.classList.toggle('open',eOn);
@@ -124,6 +134,6 @@ function all(){render('A');render('B');const A=SER.A,B=SER.B;if(!A||!B)return;co
 $('mode').onclick=()=>{expert=!expert;$('mode').textContent=expert?'Show simple numbers':'Show expert numbers';all()};
 let playing=false,last=0,acc=0;$('play').onclick=()=>{playing=!playing;$('play').textContent=playing?'⏸ Pause':'▶ Play'};
 (function loop(t){requestAnimationFrame(loop);const dt=Math.min(.1,(t-last)/1e3);last=t;if(!playing)return;acc+=dt*+$('spd').value;if(acc>=1){const s=Math.floor(acc);acc-=s;['A','B'].forEach(k=>$('h'+k).value=(+$('h'+k).value+s)%N);all()}})(0);
-$('note').innerHTML='<b>How it works.</b> Sun and Earth positions come from the astronomy-engine ephemeris (JPL-family accuracy, about 1 arcminute) rotated into the Moon\'s own frame with the IAU 2009 pole and libration. Sunset uses the Sun\'s upper edge; Earthset uses Earth\'s center. There is no air on the Moon, so no refraction is applied. Terrain skylines come from <code>data/horizons.json</code>, built from LOLA by <code>build_horizons.py</code>; sites marked "placeholder" use invented skylines and are not for real planning. Validate against NASA Quickmap, Moon Trek and JPL Horizons.';
+$('note').innerHTML='<b>How it works.</b> Sun and Earth positions come from the astronomy-engine ephemeris (JPL-family accuracy, about 1 arcminute) rotated into the Moon\'s own frame with the IAU 2009 pole and libration. Sunset uses the Sun\'s upper edge; Earthset uses Earth\'s center. There is no air on the Moon, so no refraction is applied. Terrain skylines are computed in your browser for any coordinates from LOLA topography (files made by <code>build_dem.py</code>, whole Moon plus a finer south-pole map): for each of 360 directions it looks out up to 200 km and keeps the highest angle, including the Moon\'s curved edge. Sites marked "placeholder" use invented skylines and are not for real planning. Validate against NASA Quickmap, Moon Trek and JPL Horizons.';
 try{all()}catch(e){$('note').textContent='Could not load the astronomy library. Check your connection and reload. '+e}
 </script></body></html>
