@@ -7,81 +7,26 @@
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;600&family=Sora:wght@300;400;600;700&family=Syncopate:wght@400;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/astronomy-engine@2.1.19/astronomy.browser.min.js"></script>
+<link rel="stylesheet" href="shared.css">
 <style>
-:root{--bg:#05070d;--panel:rgba(10,14,24,.62);--ink:#e9ecf3;--mut:#8d97ab;--line:rgba(255,255,255,.12);--sun:#ffc94a;--earth:#5aa2ff;--ok:#4fd08a;--bad:#ff6b5e;--dark:#161b27;color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
-body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.5 Sora,system-ui,sans-serif}
-.hero{position:relative;height:100svh;min-height:560px;overflow:hidden}
-#pov{position:absolute;inset:0;width:100%;height:100%;cursor:grab;touch-action:none}#pov:active{cursor:grabbing}
-.glass{background:var(--panel);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid var(--line);border-radius:14px}
-.brand{position:absolute;left:18px;top:18px;padding:14px 16px;max-width:330px}
-.brand h1{margin:0;font:400 19px/1.2 Sora,sans-serif;letter-spacing:.04em;display:flex;align-items:center;gap:10px}
-.brand p{margin:6px 0 10px;color:var(--mut);font-size:13px}
-select,input,button{font:13px Sora,system-ui,sans-serif;color:var(--ink);background:rgba(255,255,255,.07);border:1px solid var(--line);border-radius:8px;padding:7px 10px}
-select option{background:#10151f}button{cursor:pointer}button:hover{background:rgba(255,255,255,.14)}
-button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--earth);outline-offset:2px}
-.read{position:absolute;right:18px;top:18px;padding:14px 16px;min-width:280px}
-.read .r{display:flex;justify-content:space-between;gap:16px;padding:4px 0;font-variant-numeric:tabular-nums}.read .r span{color:var(--mut)}
-.chip{display:inline-block;padding:2px 10px;border-radius:99px;font-weight:600;font-size:12px}
-.on{background:rgba(79,208,138,.18);color:var(--ok)}.off{background:rgba(255,107,94,.18);color:var(--bad)}
-.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:7px}
-#globe{position:absolute;right:18px;top:290px;width:190px;height:190px;border-radius:14px;border:1px solid var(--line);background:rgba(5,7,13,.5)}
-.ctl{position:absolute;left:18px;right:18px;bottom:calc(18px + env(safe-area-inset-bottom,0px));padding:12px 14px;display:flex;flex-wrap:wrap;gap:10px;align-items:center}
-.ctl input[type=range]{flex:1;min-width:180px;padding:0;accent-color:var(--sun)}
-#tlabel{font-variant-numeric:tabular-nums;min-width:150px;color:var(--ink)}
-.hint{position:absolute;left:0;right:0;bottom:86px;text-align:center;color:var(--mut);font-size:12px;pointer-events:none}
-main{max-width:1060px;margin:auto;padding:48px 18px 70px}
-h2{font:600 22px Sora,sans-serif;margin:34px 0 6px}.sub{color:var(--mut);margin:0 0 16px;max-width:70ch}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
-.card{padding:14px 16px}.card h3{margin:0 0 8px;font:600 15px Sora,sans-serif}.card.sel{border-color:var(--sun)}
-.m{display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--line)}.m b{font-variant-numeric:tabular-nums}
-.note{font-size:12px;color:var(--mut);margin-top:6px}.plain{margin:0;font-size:14px}
-.row{display:flex;flex-wrap:wrap;gap:10px;align-items:end;margin:8px 0}.row label{display:flex;flex-direction:column;gap:3px;color:var(--mut);font-size:12px}
-.wrap{overflow-x:auto}canvas{display:block;max-width:100%}
-.warn{border-left:3px solid var(--sun);padding:10px 14px;margin:20px 0;color:var(--mut);font-size:13px;background:rgba(255,201,74,.06);border-radius:0 8px 8px 0}
-.intro-ui{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;text-align:center;padding:0 6vw 7vh;pointer-events:none;transition:opacity 1.3s ease,transform 1.8s ease;background:linear-gradient(180deg,rgba(5,7,13,0) 60%,rgba(5,7,13,.4) 100%)}
-.intro-ui h1{font:400 clamp(22px,4.2vw,64px)/1.1 Syncopate,sans-serif;letter-spacing:.14em;margin:14px 0 0;text-transform:uppercase;text-shadow:0 4px 50px rgba(0,0,0,.6)}
-.intro-ui p{margin:16px 0 28px;max-width:46ch;color:#c4cbdb;font-weight:300;font-size:clamp(14px,1.6vw,18px)}
-#enter{pointer-events:auto;padding:14px 44px;font-size:15px;letter-spacing:.16em;border-radius:99px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.5);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
-#enter:hover{background:#fff;color:#05070d}
-body:not(.intro) .intro-ui{opacity:0;transform:translateY(-24px)}body:not(.intro) #enter{pointer-events:none}
-.brand,.read,#globe,.ctl,.hint{transition:opacity 1.2s ease 1.6s}
-body.intro .brand,body.intro .read,body.intro #globe,body.intro .ctl,body.intro .hint{opacity:0;pointer-events:none}
-body.intro main{display:none}
-body,button,select,input,h2,h3,.brand h1,.intro-ui p{font-family:Outfit,system-ui,sans-serif!important}
-.tag{position:absolute;pointer-events:none;color:#e9ecf3;font:300 14px/1.35 Outfit,sans-serif;letter-spacing:.04em;transition:opacity 1s ease;text-shadow:0 1px 12px rgba(0,0,0,.85);border-left:1px solid rgba(255,255,255,.55);padding-left:10px}.tag b{display:block;font-weight:600;font-size:16px;letter-spacing:.16em}.tag small{color:#b4bdd0;font-size:13px}
-body:not(.intro) .tag{opacity:0}
-[data-glyph]{color:var(--sun);display:inline-flex;align-items:center}[data-glyph] svg{width:28px;height:15px}.biglyph svg{width:92px;height:48px}.biglyph{filter:drop-shadow(0 0 18px rgba(255,201,74,.55))}
-#enter{display:inline-flex;align-items:center;gap:12px}
-.eye{width:64px;height:40px;overflow:visible;opacity:.45;transition:opacity .4s,filter .4s;flex:none}.eye *{fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}.eye .almond{fill:rgba(255,255,255,.05)}.eye .pupil{fill:currentColor;stroke:none}.eye .glint{fill:#fff;stroke:none}
-.eye .lid{transform-box:fill-box;transform-origin:center;transform:scaleY(.07);transition:transform .45s cubic-bezier(.3,.7,.2,1)}.eye.open{opacity:1;filter:drop-shadow(0 0 6px currentColor)}.eye.open .lid{transform:scaleY(1)}
-.sunEye{color:var(--sun)}.moonEye{color:var(--earth)}
-.eyeblk{display:flex;align-items:center;gap:14px;padding:8px 0;border-bottom:1px solid var(--line)}.eyeblk>div{color:var(--ink);min-width:0}.eyeblk h4{margin:0;font:600 14px Outfit,sans-serif}.eyeblk em{display:block;font-style:normal;color:var(--mut);font-size:12px}.eyeblk small{color:var(--mut);font-size:12px}.st{display:block;font-weight:600;font-size:13px;margin:3px 0 1px}.st.go{color:var(--ok)}.st.stop{color:var(--bad)}
-.akhet{display:flex;align-items:center;gap:8px;margin-top:8px;padding:6px 10px;border-radius:8px;font-size:12px;color:var(--sun);opacity:0;border:1px solid transparent;transition:opacity .4s}.akhet.on{opacity:1;border-color:rgba(255,201,74,.5);background:rgba(255,201,74,.08);animation:pulse 1.8s ease-in-out infinite}@keyframes pulse{50%{box-shadow:0 0 18px rgba(255,201,74,.45)}}@media(prefers-reduced-motion:reduce){.akhet.on{animation:none}}
-.eyes2{display:flex;gap:10px;margin:4px 0 10px}.e1{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 4px;border-radius:10px;border:1px solid var(--line)}.e1 b{font-size:22px;font-variant-numeric:tabular-nums}.e1 small{color:var(--mut);font-size:12px;text-align:center}.e1 .eye{width:56px;height:34px}
-@media(max-width:700px){#globe{display:none}.read{top:auto;bottom:150px;right:18px;left:18px}.brand{right:18px;max-width:none}}
-.launch-btn { display: inline-block; margin-top: 10px; background-color: var(--sun); color: #05070d; padding: 8px 14px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 13px; text-align: center; transition: opacity 0.2s; }
-.launch-btn:hover { opacity: 0.9; }
 
-.bar{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin:10px 0;padding:12px 14px}.grid.two{grid-template-columns:repeat(auto-fit,minmax(360px,1fr))}.pan h2{margin-top:0}
-.badge{display:inline-block;font-size:12px;padding:1px 9px;border-radius:99px;margin:6px 0}.real{background:rgba(79,208,138,.18);color:var(--ok)}.fake{background:rgba(255,107,94,.18);color:var(--bad)}
-.cust{display:flex;gap:8px}.cust[hidden]{display:none}.cust input{width:100%}.pan label{display:block;color:var(--mut);font-size:12px;margin-top:8px}.pan input[type=range]{width:100%;accent-color:var(--sun);padding:0}
-.pan canvas{width:100%;margin-top:10px;border-radius:10px;background:#04060b;border:1px solid var(--line)}.cap{color:var(--mut);font-size:12px;margin:6px 0 0}.eyes{display:flex;gap:10px;margin:8px 0}.e1 small{color:var(--mut)}
-table{width:100%;border-collapse:collapse}td,th{padding:5px 8px;border-bottom:1px solid var(--line);text-align:right}th:first-child,td:first-child{text-align:left}
-details{margin:8px 0}summary{cursor:pointer;color:var(--sun)}details p{color:var(--mut);margin:6px 0}
-#who{display:flex;gap:6px;margin:8px 0}#who button.act{background:var(--sun);color:#05070d;border-color:var(--sun)}
-.story{display:grid;max-width:54ch;min-height:7em;margin:14px 0 22px;place-items:center}.story p{grid-area:1/1;margin:0!important;opacity:0;animation:sq 6s ease var(--d) forwards}.story p.last{animation:sl 2s ease var(--d) forwards}
-@keyframes sq{0%{opacity:0;transform:translateY(10px)}15%,80%{opacity:1;transform:none}100%{opacity:0}}@keyframes sl{to{opacity:1}}.story b{color:var(--sun);font-weight:600}
-</style></head><body class="intro"><script>onerror=function(m,u,l){document.body.insertAdjacentHTML("afterbegin","<div style=\"background:#5a1d18;color:#fff;padding:10px 16px;position:relative;z-index:99\">Something went wrong: "+m+" (line "+l+"). Please send this message to the developer.</div>")}</script>
+#fade{position:fixed;inset:0;background:#05070d;opacity:0;pointer-events:none;transition:opacity 1s ease;z-index:50}#fade.on{opacity:1}
+.enterhint{margin-top:12px;font-size:13px;color:#c4cbdb;letter-spacing:.04em}
+.ctl .tl{font-size:12.5px;color:var(--mut)}.ctl label.spdl{display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--mut)}.ctl{gap:8px}
+.brand .mini{max-width:36ch}
+.v3 .brand,.v3 .read,.v3 #globe,.v3 .ctl,.v3 .hint{transition:none!important}</style></head><body class="intro"><script>onerror=function(m,u,l){document.body.insertAdjacentHTML("afterbegin","<div style=\"background:#5a1d18;color:#fff;padding:10px 16px;position:relative;z-index:99\">Something went wrong: "+m+" (line "+l+"). Please send this message to the developer.</div>")}</script>
+<div id="fade"></div>
 <section class="hero">
 <canvas id="pov"></canvas>
-<div class="intro-ui"><div class="biglyph" data-glyph></div><h1>Two Eyes of Horus</h1><div class="story"><p style="--d:.5s">In ancient Egypt, the sky god Horus had two eyes.</p><p style="--d:6.5s">The right eye was the <b>Sun</b>: blazing light, the giver of life.</p><p style="--d:12.5s">The left eye was the <b>Moon</b>: wounded, healed, and always watching over the night.</p><p style="--d:18.5s">Where earth meets sky they placed <b>Akhet</b>, the horizon, where light is born and where it dies.</p><p class="last" style="--d:24.5s">At the Moon's south pole the Sun creeps along Akhet and never climbs. Your Sun Eye is power, your Moon Eye is the line home to Earth. Find the landing site where both stay open.</p></div><button id="enter"><span data-glyph></span>Enter</button></div>
+<div class="intro-ui"><div class="biglyph" data-glyph></div><h1>Two Eyes of Horus</h1><div class="story"><p style="--d:.5s">In ancient Egypt, the sky god Horus had two eyes.</p><p style="--d:6.5s">The right eye was the <b>Sun</b>: blazing light, the giver of life.</p><p style="--d:12.5s">The left eye was the <b>Moon</b>: wounded, healed, and always watching over the night.</p><p style="--d:18.5s">Where earth meets sky they placed <b>Akhet</b>, the horizon, where light is born and where it dies.</p><p class="last" style="--d:24.5s">At the Moon's south pole the Sun creeps along Akhet and never climbs. Your Sun Eye is power, your Moon Eye is the line home to Earth. Find the landing site where both stay open.</p></div><button id="enter" title="Click to start. This opens the Mission Planner."><span data-glyph></span>Enter</button><div class="enterhint">▶ Click Enter to open the Mission Planner</div></div>
 <div class="tag" id="tagE"><b>EARTH</b><small>384,400 km away</small></div><div class="tag" id="tagM" style="left:5vw;bottom:34vh"><b>THE MOON</b><small>South pole, 89.5°S</small></div>
 <div class="brand glass">
   <h1><span data-glyph></span>Two Eyes of Horus</h1>
   <p>Akhet, the horizon. Pick a south pole site and watch both eyes open and close.</p>
-  <div id="who"><button class="act" data-k="A">Site A</button><button data-k="B">Site B</button></div><select id="site" aria-label="Landing site"></select>
-  <a href="planner.html" class="launch-btn">Open Mission Planner</a>
+  <p class="mini">📍 You have two landing spots to compare. Tap <b>A</b> or <b>B</b> to choose which one you are standing at.</p>
+  <div id="who"><button class="act kb" data-k="A" title="Stand at your first landing spot"><b><span class="ic">📍</span>Site A</b><small>Your first spot</small></button><button class="kb" data-k="B" title="Stand at your second landing spot"><b><span class="ic">📍</span>Site B</b><small>Your second spot</small></button></div>
+  <p class="mini">🌙 Pick a place on the Moon:</p><select id="site" aria-label="Choose a place on the Moon" title="Choose a place on the Moon"></select>
+  <a href="planner.html" class="launch-btn kb" title="Go to the Mission Planner to compare places and dates"><b><span class="ic">🚀</span>Back to Mission Planner</b><small>Compare places and dates</small></a>
 </div>
 <div class="read glass">
 <div class="eyeblk sunEye"><span data-eye></span><div><h4>Sun eye</h4><em>Solar power</em><b id="pwr" class="st">-</b><small>Sun elevation <span id="sunEl">-</span></small></div></div>
@@ -90,22 +35,33 @@ details{margin:8px 0}summary{cursor:pointer;color:var(--sun)}details p{color:var
 
 <div class="hint">Drag to look around. Sun and Earth are drawn 3× larger than real so you can see them.</div>
 <div class="ctl glass">
-<button id="play" aria-label="Play or pause">Play</button>
-<select id="spd" aria-label="Speed"><option value="3">3 h/s</option><option value="12" selected>12 h/s</option><option value="48">2 days/s</option></select>
-<input type="range" id="slider" min="0" max="0" value="0" aria-label="Time">
+<button id="play" class="kb" aria-label="Play or pause time" title="Start or stop the clock. Time moves on its own while playing."><b><span class="ic">▶</span>Play</b><small>Make time move</small></button>
+<label class="spdl" title="How fast time moves">⏱ Speed<select id="spd" aria-label="Speed of time" title="How fast time moves"><option value="3">🐢 Slow: 3 hours a second</option><option value="12" selected>🚶 Normal: 12 hours a second</option><option value="48">🐇 Fast: 2 days a second</option></select></label>
+<span class="tl">⏳ Drag to move time:</span><input type="range" id="slider" min="0" max="0" value="0" aria-label="Move through time" title="Drag left or right to move through time">
 <span id="tlabel"></span>
-<button id="lookS">Look at Sun</button><button id="lookE">Look at Earth</button>
-<button id="nextS">Next sunrise/sunset</button><button id="nextE">Next Earth gain/loss</button>
+<button id="lookS" class="kb" title="Turn the camera to face the Sun"><b><span class="ic">☀️</span>Look at the Sun</b><small>Turn to face the Sun</small></button><button id="lookE" class="kb" title="Turn the camera to face the Earth"><b><span class="ic">🌍</span>Look at the Earth</b><small>Turn to face our home</small></button>
+<button id="nextS" class="kb" title="Jump forward in time to the next sunrise or sunset"><b><span class="ic">🌅</span>Next sunrise or sunset</b><small>Jump to when the Sun comes or goes</small></button><button id="nextE" class="kb" title="Jump forward in time to when Earth appears or hides"><b><span class="ic">📡</span>Next Earth in or out</b><small>Jump to when Earth shows or hides</small></button>
 </div></section>
 
 <main>
-<div class="bar glass"><label style="margin:0"><input type="checkbox" id="link"> Use the same date and moment for both sites</label>
+<div class="bar glass"><label style="margin:0" title="When ticked, Site A and Site B always show the same date and time"><input type="checkbox" id="link"> 🔗 <b>Same time for both sites</b><span class="mini" style="display:block;margin:0">Tick this to make A and B move through time together.</span></label>
 
-<button id="mode">Show expert numbers</button></div>
+<button id="mode" class="kb" title="Switch between simple words and the detailed science numbers"><b><span class="ic">🔬</span>Show expert numbers</b><small>See the detailed science numbers</small></button></div>
 <div class="grid two" id="panels"></div>
 <div class="card glass" style="margin-top:14px"><h2>Side by side</h2><div id="cmp"></div></div>
-<div class="card glass" style="margin-top:14px"><h2>What do these words mean?</h2>
-<details open><summary>Moon day vs Earth day</summary><p>All timers here use Earth days (24 hours each). One Moon day, from one sunrise to the next, lasts about 29.5 Earth days: roughly two weeks of daylight, then two weeks of night.</p></details><details><summary>Sun elevation</summary><p>How high the Sun is above the horizon. 90° is straight up. At the Moon's south pole it never goes above about 1.5°, so sunlight arrives almost sideways and tall hills block it.</p></details>
+<div class="card glass" style="margin-top:14px"><h2>What do these words mean?</h2><p class="mini"><b>What is this page for?</b> You stand on the Moon and look around. Move time to watch the Sun and Earth rise and set above the real mountain skyline. Use the yellow Mission Planner button to compare many sites and dates at once. Numbers: elevation is the height in degrees (0° = horizon). Percent = share of time an Eye is open. Pictures: gold eye = Sun power, blue eye = line to Earth, bars = how much time each site has Sun and Earth.</p>
+<details open><summary>What do the buttons do?</summary><div class="guide">
+<div><span>📍</span><b>Site A / Site B<em>Choose which landing spot you are looking at.</em></b></div>
+<div><span>▶</span><b>Play / Pause<em>Makes time move on its own, or stops it.</em></b></div>
+<div><span>⏱</span><b>Speed<em>How fast time moves while playing.</em></b></div>
+<div><span>☀️</span><b>Look at the Sun<em>Turns the camera toward the Sun.</em></b></div>
+<div><span>🌍</span><b>Look at the Earth<em>Turns the camera toward our home planet.</em></b></div>
+<div><span>🌅</span><b>Next sunrise or sunset<em>Jumps to the next time the Sun comes up or goes down.</em></b></div>
+<div><span>📡</span><b>Next Earth in or out<em>Jumps to the next time Earth appears or hides, so you can or cannot call home.</em></b></div>
+<div><span>🔗</span><b>Same time for both sites<em>Makes A and B share the same date and time.</em></b></div>
+<div><span>🔬</span><b>Show expert numbers<em>Switches on the detailed science numbers.</em></b></div>
+<div><span>🚀</span><b>Back to Mission Planner<em>Compare many places and dates.</em></b></div></div></details>
+<details><summary>Moon day vs Earth day</summary><p>All timers here use Earth days (24 hours each). One Moon day, from one sunrise to the next, lasts about 29.5 Earth days: roughly two weeks of daylight, then two weeks of night.</p></details><details><summary>Sun elevation</summary><p>How high the Sun is above the horizon. 90° is straight up. At the Moon's south pole it never goes above about 1.5°, so sunlight arrives almost sideways and tall hills block it.</p></details>
 <details><summary>Horizon map</summary><p>The top picture shows what you would see standing there: the ground's skyline (the dark shape) all the way around, with the Sun and Earth. The Moon has no air, so there is no glow or bending of light: when something drops behind the skyline, it is simply gone.</p></details>
 <details><summary>Sunset and Earthset timers</summary><p>Hours or days until the Sun or Earth slips behind the skyline (or comes back). One Moon day lasts about 29.5 Earth days, so a sunset can mean a two-week night.</p></details>
 <details><summary>Power and communication</summary><p>Solar panels make power only while the Sun is up, and more when it is higher. A lander can talk straight to Earth only while Earth is above the skyline. Move the date by one day and watch how much changes.</p></details>
@@ -113,55 +69,9 @@ details{margin:8px 0}summary{cursor:pointer;color:var(--sun)}details p{color:var
 <div class="warn" id="note"></div>
 </main>
 
+<script src="shared.js"></script>
 <script>
-const D=Math.PI/180,$=id=>document.getElementById(id),N=720;let playing=false,expert=false,yaw=0,pitch=5*D,HK='A';
-const SITES=[{id:'mal',n:'Malapert Massif (south pole)',lat:-85.99,lon:.12},{id:'hay',n:'Haworth rim (south pole)',lat:-87.45,lon:-5},{id:'nob',n:'Nobile Rim 1 (Artemis III)',lat:-85.4,lon:31.4},
-{id:'con',n:'Connecting Ridge (Artemis III)',lat:-89.45,lon:-137.1},{id:'sha',n:'Shackleton rim (south pole)',lat:-89.54,lon:129.8},{id:'mou',n:'Mons Mouton (IM-2)',lat:-84.8,lon:29.2},{id:'mpa',n:'Malapert A (IM-1)',lat:-80.13,lon:1.44},
-{id:'cha',n:'Chandrayaan-3 landing',lat:-69.3733,lon:32.3189},{id:'ch4',n:"Chang'e-4",lat:-45.4446,lon:177.5991},{id:'bg1',n:'Blue Ghost 1 (Mare Crisium)',lat:18.56,lon:61.81},
-{id:'a11',n:'Apollo 11 (Tranquility)',lat:.6741,lon:23.473},{id:'a12',n:'Apollo 12',lat:-3.0128,lon:-23.4219},{id:'a14',n:'Apollo 14',lat:-3.6453,lon:-17.4714},{id:'a15',n:'Apollo 15 (Hadley)',lat:26.1322,lon:3.633},
-{id:'a16',n:'Apollo 16',lat:-8.9734,lon:15.5011},{id:'a17',n:'Apollo 17',lat:20.1908,lon:30.7717},{id:'cus',n:'Custom coordinates…',lat:-85,lon:0}];
-const hzg=(b,a,p)=>Array.from({length:360},(_,i)=>{const t=i*D;return Math.max(0,b+a*(.5*Math.sin(3*t+p)+.3*Math.sin(7*t+2*p)+.2*Math.sin(13*t+3*p)))});
-const PH={mal:hzg(1.2,1.6,0),hay:hzg(2.2,2.4,1),nob:hzg(1.8,2,2),con:hzg(.9,1.2,3),sha:hzg(1.6,1.8,4),cha:hzg(.5,.8,5),a15:hzg(1,1.5,6),a11:Array(360).fill(0)};
-/* ---- LOLA terrain: loaded once, then a skyline is computed for ANY lat/lon in the browser (~20 ms) ---- */
-const RM=1737400;let DEM={},HZC={};
-async function ld(u){const r=await fetch(u);if(!r.ok)throw new Error(u+' not found ('+r.status+')');let b=new Uint8Array(await r.arrayBuffer());if(b[0]===31&&b[1]===139)b=new Uint8Array(await new Response(new Blob([b]).stream().pipeThrough(new DecompressionStream('gzip'))).arrayBuffer());return new Int16Array(b.buffer,b.byteOffset,b.byteLength>>1)}
-fetch('data/dem_meta.json').then(r=>r.json()).then(async m=>{DEM={...m};DEM.g=await ld('data/dem_global.bin.gz');if(DEM.g.length!==DEM.gw*DEM.gh)throw new Error('global map has '+DEM.g.length+' values, expected '+DEM.gw*DEM.gh+' (use LDEM_16.IMG)');
- try{DEM.s=await ld('data/dem_south.bin.gz');if(DEM.s.length!==DEM.pn*DEM.pn){const q=DEM.s.length;DEM.s=null;DEM.err='polar map size does not match n='+DEM.pn+' ('+q+' values)'}}catch(e){DEM.err=String(e.message||e)}HZC={};all()}).catch(e=>{DEM={err:String(e.message||e)};all()});
-function bil(a,w,h,x,y,wrap){const x0=Math.floor(x),y0=Math.floor(y),fx=x-x0,fy=y-y0,X=i=>wrap?(i%w+w)%w:Math.max(0,Math.min(w-1,i)),Y=j=>Math.max(0,Math.min(h-1,j));
-return a[Y(y0)*w+X(x0)]*(1-fx)*(1-fy)+a[Y(y0)*w+X(x0+1)]*fx*(1-fy)+a[Y(y0+1)*w+X(x0)]*(1-fx)*fy+a[Y(y0+1)*w+X(x0+1)]*fx*fy}
-function dhgt(la,lo){if(DEM.s&&la<-80*D){const r=2*RM*Math.tan((Math.PI/2+la)/2);return .5*bil(DEM.s,DEM.pn,DEM.pn,(DEM.pn-1)/2+r*Math.sin(lo)/DEM.pm,(DEM.pn-1)/2-r*Math.cos(lo)/DEM.pm)}
- return .5*bil(DEM.g,DEM.gw,DEM.gh,((lo/D%360+360)%360)*DEM.gp-.5,(90-la/D)*DEM.gp-.5,true)}
-function skyline(lat,lon){const la=lat*D,lo=lon*D,h0=dhgt(la,lo)+2,th=[],out=[];for(let d=.5;d<=30;d+=.5)th.push(d*1e3/RM);for(let d=32;d<=200;d+=2)th.push(d*1e3/RM);
- for(let a=0;a<360;a++){const az=a*D;let best=-90;for(const t of th){const ct=Math.cos(t),st=Math.sin(t),l2=Math.asin(Math.sin(la)*ct+Math.cos(la)*st*Math.cos(az)),o2=lo+Math.atan2(Math.sin(az)*st*Math.cos(la),ct-Math.sin(la)*Math.sin(l2)),z=dhgt(l2,o2),
-  el=Math.atan2((RM+z)*ct-(RM+h0),(RM+z)*st)/D;if(el>best)best=el}out.push(best)}return out}
-const hzFor=(id,lat,lon)=>{if(!DEM.g)return PH[id]||Array(360).fill(0);const k=lat.toFixed(3)+','+lon.toFixed(3);return HZC[k]||(HZC[k]=skyline(lat,lon))};
-/* ---- math: JPL-family ephemeris (astronomy-engine) + IAU 2009 Moon orientation ---- */
-const rz=(v,a)=>{const c=Math.cos(a),s=Math.sin(a);return[c*v[0]+s*v[1],-s*v[0]+c*v[1],v[2]]},rx=(v,a)=>{const c=Math.cos(a),s=Math.sin(a);return[v[0],c*v[1]+s*v[2],-s*v[1]+c*v[2]]};
-const nm=a=>{const l=Math.hypot(...a);return a.map(v=>v/l)},dot=(a,b)=>a[0]*b[0]+a[1]*b[1]+a[2]*b[2];
-function frame(dt){const d=dt.getTime()/864e5-10957.5,T=d/36525,E=(a,b)=>(a+b*d)*D,S=Math.sin,C=Math.cos;
-const e1=E(125.045,-.0529921),e2=E(250.089,-.1059842),e3=E(260.008,13.0120009),e4=E(176.625,13.3407154),e5=E(357.529,.9856003),e6=E(311.589,26.4057084),e7=E(134.963,13.064993),e8=E(276.617,.3287146),e9=E(34.226,1.7484877),e10=E(15.134,-.1589763),e11=E(119.743,.0036096),e12=E(239.961,.1643573),e13=E(25.053,12.9590088);
-const ra=269.9949+.0031*T-3.8787*S(e1)-.1204*S(e2)+.07*S(e3)-.0172*S(e4)+.0072*S(e6)-.0052*S(e10)+.0043*S(e13);
-const de=66.5392+.013*T+1.5419*C(e1)+.0239*C(e2)-.0278*C(e3)+.0068*C(e4)-.0029*C(e6)+.0009*C(e7)+.0008*C(e10)-.0009*C(e13);
-const W=38.3213+13.17635815*d+3.561*S(e1)+.1208*S(e2)-.0642*S(e3)+.0158*S(e4)+.0252*S(e5)-.0066*S(e6)-.0047*S(e7)-.0046*S(e8)+.0028*S(e9)+.0052*S(e10)+.004*S(e11)+.0019*S(e12)-.0044*S(e13);
-const m=Astronomy.GeoMoon(dt),s=Astronomy.GeoVector(Astronomy.Body.Sun,dt,true),mv=[m.x,m.y,m.z],sun=[s.x-m.x,s.y-m.y,s.z-m.z],ear=mv.map(x=>-x);
-const B=v=>rz(rx(rz(v,(90+ra)*D),(90-de)*D),W*D);
-return{B,s:nm(B(sun)),e:nm(B(ear)),sr:.2666/Math.hypot(...sun),er:Math.asin(6371/(Math.hypot(...mv)*149597870.7))/D}}
-function azel(v,la,lo){const p=la*D,l=lo*D,up=[Math.cos(p)*Math.cos(l),Math.cos(p)*Math.sin(l),Math.sin(p)],no=[-Math.sin(p)*Math.cos(l),-Math.sin(p)*Math.sin(l),Math.cos(p)],ea=[-Math.sin(l),Math.cos(l),0];
-return{el:Math.asin(Math.max(-1,Math.min(1,dot(v,up))))/D,az:(Math.atan2(dot(v,ea),dot(v,no))/D+360)%360}}
-const mask=(h,az)=>{const n=h.length,p=(az%360+360)%360/360*n,i=Math.floor(p)%n,t=p-Math.floor(p);return h[i]*(1-t)+h[(i+1)%n]*t};
-const FR=new Map();function frames(t0){if(!FR.has(t0)){FR.set(t0,Array.from({length:N},(_,i)=>frame(new Date(t0+i*36e5))));if(FR.size>8)FR.delete(FR.keys().next().value)}return FR.get(t0)}
-/* ---- helpers ---- */
-const fd=h=>h==null?'—':h<48?Math.round(h)+' h':(h/24).toFixed(1)+' Earth days';
-const flip=(a,i)=>{for(let j=i+1;j<N;j++)if(a[j]!==a[i])return j-i;return null};
-const longest=(a,v)=>{let b=0,c=0;for(const x of a){x===v?b=Math.max(b,++c):c=0}return b};
-const pct=a=>a.filter(Boolean).length/N*100;
-const timer=(a,i,up,dn)=>{const x=flip(a,i);return x==null?(a[i]?'stays up for at least '+fd(N-1-i):'stays hidden for at least '+fd(N-1-i)):(a[i]?up:dn)+' in '+fd(x)};
-/* ---------- BRAND: Eye of Horus (wedjat) and Akhet glyph ---------- */
-const WEDJAT="<svg class='eye' viewBox='0 0 72 44' aria-hidden='true'><path class='brow' d='M8 9 Q36 -1 64 9'/><g class='lid'><path class='almond' d='M6 22 Q36 4 66 22 Q36 40 6 22Z'/><circle class='pupil' cx='36' cy='22' r='8'/><circle class='glint' cx='39' cy='19' r='2.2'/></g><path class='tear' d='M44 34 L50 42 Q56 44 58 38'/><path class='curl' d='M28 34 Q22 42 14 40 Q8 38 11 33 Q14 30 17 33'/></svg>";
-const GLYPH="<svg viewBox='0 0 80 42' aria-hidden='true'><path d='M2 38 L16 10 Q40 34 64 10 L78 38 Z' fill='none' stroke='currentColor' stroke-width='3' stroke-linejoin='round'/><circle cx='40' cy='14' r='7' fill='currentColor'/></svg>";
-const eyeP=p=>WEDJAT.replace("class='eye'","class='eye open'").replace("class='lid'",`class='lid' style='transform:scaleY(${Math.max(.07,p/100).toFixed(2)})'`);
-const eyes2=r=>`<div class="eyes2"><div class="e1 sunEye">${eyeP(r.sp)}<b>${r.sp.toFixed(0)}%</b><small>Sun eye open: power</small></div><div class="e1 moonEye">${eyeP(r.ep)}<b>${r.ep.toFixed(0)}%</b><small>Moon eye open: link home</small></div></div>`;
-document.querySelectorAll('[data-eye]').forEach(n=>n.innerHTML=WEDJAT);document.querySelectorAll('[data-glyph]').forEach(n=>n.innerHTML=GLYPH);
+let playing=false,expert=false,yaw=0,pitch=5*D,HK='A';
 /* ---------- 3D SCENE ---------- */
 const rnd=(()=>{let s=11;return()=>(s=s*16807%2147483647)/2147483647})();
 const tex=(w,h,fn)=>{const c=document.createElement('canvas');c.width=w;c.height=h;fn(c.getContext('2d'),w,h);return new THREE.CanvasTexture(c)};
@@ -283,16 +193,18 @@ let drag=null;cv.onpointerdown=e=>{if(K<1)return;drag=[e.clientX,e.clientY];cv.s
 cv.onpointermove=e=>{if(!drag)return;yaw+=(e.clientX-drag[0])*.004;pitch=Math.max(-.1,Math.min(1.2,pitch-(e.clientY-drag[1])*.004));drag=[e.clientX,e.clientY]};
 function look(w){const H=HERO();if(!H)return;const q=w==='S'?H.sa:H.ea;yaw=-q.az*D;pitch=Math.max(.02,(q.el+4)*D)}
 function jump(key){const a=SER[HK][key],i=+$('h'+HK).value;for(let k=1;k<N;k++){const j=(i+k)%N;if(a[j]!==a[i]){$('h'+HK).value=j;all();return}}}
-$('enter').onclick=()=>{document.body.classList.remove('intro');KT=performance.now();all()};
-$('play').onclick=()=>{playing=!playing;$('play').textContent=playing?'Pause':'Play'};
+const VIEW3D=/[?&]view=3d/.test(location.search);
+if(VIEW3D){document.body.classList.add('v3');document.body.classList.remove('intro');K=1;KT=-1;introRun=true}
+else $('enter').onclick=()=>{$('enter').disabled=true;$('fade').classList.add('on');setTimeout(()=>{location.href='planner.html'},1050)};
+$('play').onclick=()=>{playing=!playing;$('play').innerHTML=playing?'<b><span class="ic">⏸</span>Pause</b><small>Stop the clock</small>':'<b><span class="ic">▶</span>Play</b><small>Make time move</small>'};
 $('slider').oninput=e=>{$('h'+HK).value=e.target.value;if($('link').checked&&HK==='A')$('hB').value=e.target.value;all()};
 $('site').onchange=e=>{$('s'+HK).value=e.target.value;all()};
 $('lookS').onclick=()=>look('S');$('lookE').onclick=()=>look('E');$('nextS').onclick=()=>jump('sO');$('nextE').onclick=()=>jump('eO');
 document.querySelectorAll('#who button').forEach(b=>b.onclick=()=>{HK=b.dataset.k;document.querySelectorAll('#who button').forEach(x=>x.classList.toggle('act',x===b));all();look('E')});
 let SER={},PS={};
-const panel=k=>`<section class="card glass pan"><h2>Site ${k}</h2><select id="s${k}" aria-label="Site ${k}"></select>
+const panel=k=>`<section class="card glass pan"><h2>📍 Site ${k}</h2><p class="mini">Choose a place on the Moon:</p><select id="s${k}" aria-label="Site ${k}" title="Choose a place on the Moon"></select>
 <div class="cust" id="c${k}" hidden><label>Latitude° (south −)<input id="la${k}" type="number" step=".01" value="-85"></label><label>Longitude° (east +)<input id="lo${k}" type="number" step=".01" value="0"></label></div><div><span class="badge" id="b${k}"></span></div>
-<label>Date<input id="d${k}" type="date"></label><label>Moment in the Moon day: <b id="t${k}"></b><input id="h${k}" type="range" min="0" max="${N-1}" value="0"></label>
+<label>📅 Pick a date<input id="d${k}" type="date" title="Choose the day you want to look at"></label><label>⏳ Drag to move through the Moon day: <b id="t${k}"></b><input id="h${k}" type="range" min="0" max="${N-1}" value="0"></label>
 <div class="eyes" id="e${k}"></div><div id="m${k}"></div><p class="cap">Timers count Earth days (24 hours). One Moon day, sunrise to sunrise, lasts about 29.5 Earth days.</p>
 <canvas id="or${k}" height="300"></canvas><p class="cap">3D space map (not to scale): the Moon with the Sun (gold) and Earth (blue) in their true directions. Gold diamond = this site, red = the other site. Gold and blue lines turn bright when the Sun or Earth can be seen from the site. The far dots are the real planets Venus, Mars, Jupiter and Saturn. Drag to rotate.</p><canvas id="pa${k}" width="680" height="220"></canvas><p class="cap">Horizon map: drag left or right to turn all the way around. The dark shape is the skyline. Dots show where the Sun (gold) and Earth (blue) travel over about 30 days.</p>
 <canvas id="tl${k}" width="680" height="190"></canvas><p class="cap">Timeline: lines are heights above the flat horizon. Bars at the bottom are on when the Sun or Earth is above the skyline. Click to jump.</p></section>`;
@@ -305,7 +217,7 @@ function render(k){const id=$('s'+k).value,S=SITES.find(s=>s.id===id),cu=id==='c
  const real=!!DEM.g,hz=hzFor(id,lat,lon),key=[id,lat,lon,t0,real].join();
  if(!SER[k]||SER[k].key!==key){const f=frames(t0),o={key,hz,t0,sE:[],sA:[],eE:[],eA:[],sO:[],eO:[],f};for(const x of f){const a=azel(x.s,lat,lon),b=azel(x.e,lat,lon);o.sE.push(a.el);o.sA.push(a.az);o.eE.push(b.el);o.eA.push(b.az);o.sO.push(a.el+x.sr>mask(hz,a.az));o.eO.push(b.el>mask(hz,b.az))}SER[k]=o}
  const o=SER[k],t=new Date(t0+i*36e5);$('t'+k).textContent=t.toISOString().slice(0,16).replace('T',' ')+' UTC (Earth day '+(i/24).toFixed(1)+')';
- $('b'+k).className='badge '+(real?'real':'fake');$('b'+k).textContent=real?'Terrain: real LOLA skyline'+(DEM.s?'':' (coarse, '+(DEM.err||'no polar map')+')'):id==='cus'?'Terrain: flat horizon assumed (terrain not loaded'+(DEM.err?': '+DEM.err:'')+')':'Terrain: placeholder (terrain not loaded'+(DEM.err?': '+DEM.err:'')+')';
+ $('b'+k).className='badge '+(real?'real':'fake');if(!real&&DEMSTATE==='loading'){$('b'+k).textContent='Terrain: loading LOLA data… [build 6]'}else $('b'+k).textContent=(real?'Terrain: real LOLA skyline'+(DEM.s?'':' (coarse, '+(DEM.err||'no polar map')+')'):id==='cus'?'Terrain: flat horizon assumed (terrain not loaded'+(DEM.err?': '+DEM.err:'')+')':'Terrain: placeholder (terrain not loaded'+(DEM.err?': '+DEM.err:'')+')')+' [build 6]';
  const sOn=o.sO[i],eOn=o.eO[i],pw=sOn?Math.sin(Math.max(0,o.sE[i])*D)*100:0;
  $('e'+k).innerHTML=`<div class="e1 sunEye">${WED}<b>${sOn?'Sun eye open':'Sun eye closed'}</b><small>${sOn?'Power: '+pw.toFixed(1)+'% of full strength':'In shadow'}</small></div><div class="e1 moonEye">${WED}<b>${eOn?'Moon eye open':'Moon eye closed'}</b><small>${eOn?'Can talk to Earth':'Earth hidden'}</small></div>`;
  const[a,b]=$('e'+k).querySelectorAll('.eye');a.classList.toggle('open',sOn);b.classList.toggle('open',eOn);
@@ -336,7 +248,7 @@ function tline(k,o,i){const c=$('tl'+k),g=c.getContext('2d'),W=c.width,H=c.heigh
  if(!c.dataset.on){c.dataset.on=1;c.addEventListener('click',e=>{const r=c.getBoundingClientRect();$('h'+k).value=Math.max(0,Math.min(N-1,Math.round((e.clientX-r.left)/r.width*N)));if($('link').checked&&k==='A')$('hB').value=$('hA').value;all()})}}
 function all(){render('A');render('B');upd();const A=SER.A,B=SER.B;if(!A||!B)return;const a=A.M,b=B.M,r=(l,x,y,f)=>`<tr><td>${l}</td><td>${f(x)}</td><td>${f(y)}</td></tr>`;
  $('cmp').innerHTML=`<table><tr><th></th><th>Site A</th><th>Site B</th></tr>`+r('Sun height now',a.sunNow,b.sunNow,x=>x)+r('Sunny share',a.sp,b.sp,x=>x.toFixed(0)+'%')+r('Earth-in-view share',a.ep,b.ep,x=>x.toFixed(0)+'%')+r('Longest night',a.dk,b.dk,fd)+r('Longest no-signal gap',a.gp,b.gp,fd)+`</table><p class="cap">${a.sp+a.ep>b.sp+b.ep?'Site A':a.sp+a.ep<b.sp+b.ep?'Site B':'Neither site'} has the better combined power-and-signal score in these 30 days.</p>`}
-$('mode').onclick=()=>{expert=!expert;$('mode').textContent=expert?'Show simple numbers':'Show expert numbers';all()};
+$('mode').onclick=()=>{expert=!expert;$('mode').innerHTML=expert?'<b><span class="ic">🙂</span>Show simple numbers</b><small>Go back to easy words</small>':'<b><span class="ic">🔬</span>Show expert numbers</b><small>See the detailed science numbers</small>';all()};
 $('site').innerHTML=SITES.map(s=>`<option value="${s.id}">${s.n}</option>`).join('');$('slider').max=N-1;
 $('note').innerHTML='<b>How it works.</b> Sun and Earth positions come from the astronomy-engine ephemeris (JPL-family accuracy, about 1 arcminute) rotated into the Moon\'s own frame with the IAU 2009 pole and libration. Sunset uses the Sun\'s upper edge; Earthset uses Earth\'s center. There is no air on the Moon, so no refraction is applied. Terrain skylines are computed in your browser for any coordinates from LOLA topography (files made by <code>build_dem.py</code>, whole Moon plus a finer south-pole map): for each of 360 directions it looks out up to 200 km and keeps the highest angle, including the Moon\'s curved edge. Sites marked "placeholder" use invented skylines and are not for real planning. Validate against NASA Quickmap, Moon Trek and JPL Horizons.';
 try{all();look('E')}catch(e){$('note').textContent='Could not load the astronomy library. Check your connection and reload. '+e}

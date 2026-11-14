@@ -7,143 +7,54 @@
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;600&family=Sora:wght@300;400;600;700&family=Syncopate:wght@400;700&display=swap" rel="stylesheet">
 
 <script src="https://cdn.jsdelivr.net/npm/astronomy-engine@2.1.19/astronomy.browser.min.js"></script>
+<link rel="stylesheet" href="shared.css">
 <style>
-:root{--bg:#05070d;--panel:rgba(10,14,24,.62);--ink:#e9ecf3;--mut:#8d97ab;--line:rgba(255,255,255,.12);--sun:#ffc94a;--earth:#5aa2ff;--ok:#4fd08a;--bad:#ff6b5e;--dark:#161b27;color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
-body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.5 Sora,system-ui,sans-serif}
-.hero{position:relative;height:100svh;min-height:560px;overflow:hidden}
-#pov{position:absolute;inset:0;width:100%;height:100%;cursor:grab;touch-action:none}#pov:active{cursor:grabbing}
-.glass{background:var(--panel);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid var(--line);border-radius:14px}
-.brand{position:absolute;left:18px;top:18px;padding:14px 16px;max-width:330px}
-.brand h1{margin:0;font:400 19px/1.2 Sora,sans-serif;letter-spacing:.04em;display:flex;align-items:center;gap:10px}
-.brand p{margin:6px 0 10px;color:var(--mut);font-size:13px}
-select,input,button{font:13px Sora,system-ui,sans-serif;color:var(--ink);background:rgba(255,255,255,.07);border:1px solid var(--line);border-radius:8px;padding:7px 10px}
-select option{background:#10151f}button{cursor:pointer}button:hover{background:rgba(255,255,255,.14)}
-button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--earth);outline-offset:2px}
-.read{position:absolute;right:18px;top:18px;padding:14px 16px;min-width:280px}
-.read .r{display:flex;justify-content:space-between;gap:16px;padding:4px 0;font-variant-numeric:tabular-nums}.read .r span{color:var(--mut)}
-.chip{display:inline-block;padding:2px 10px;border-radius:99px;font-weight:600;font-size:12px}
-.on{background:rgba(79,208,138,.18);color:var(--ok)}.off{background:rgba(255,107,94,.18);color:var(--bad)}
-.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:7px}
-#globe{position:absolute;right:18px;top:290px;width:190px;height:190px;border-radius:14px;border:1px solid var(--line);background:rgba(5,7,13,.5)}
-.ctl{position:absolute;left:18px;right:18px;bottom:calc(18px + env(safe-area-inset-bottom,0px));padding:12px 14px;display:flex;flex-wrap:wrap;gap:10px;align-items:center}
-.ctl input[type=range]{flex:1;min-width:180px;padding:0;accent-color:var(--sun)}
-#tlabel{font-variant-numeric:tabular-nums;min-width:150px;color:var(--ink)}
-.hint{position:absolute;left:0;right:0;bottom:86px;text-align:center;color:var(--mut);font-size:12px;pointer-events:none}
-main{max-width:1060px;margin:auto;padding:48px 18px 70px}
-h2{font:600 22px Sora,sans-serif;margin:34px 0 6px}.sub{color:var(--mut);margin:0 0 16px;max-width:70ch}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
-.card{padding:14px 16px}.card h3{margin:0 0 8px;font:600 15px Sora,sans-serif}.card.sel{border-color:var(--sun)}
-.m{display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--line)}.m b{font-variant-numeric:tabular-nums}
-.note{font-size:12px;color:var(--mut);margin-top:6px}.plain{margin:0;font-size:14px}
-.row{display:flex;flex-wrap:wrap;gap:10px;align-items:end;margin:8px 0}.row label{display:flex;flex-direction:column;gap:3px;color:var(--mut);font-size:12px}
-.wrap{overflow-x:auto}canvas{display:block;max-width:100%}
-.warn{border-left:3px solid var(--sun);padding:10px 14px;margin:20px 0;color:var(--mut);font-size:13px;background:rgba(255,201,74,.06);border-radius:0 8px 8px 0}
-.intro-ui{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;text-align:center;padding:0 6vw 7vh;pointer-events:none;transition:opacity 1.3s ease,transform 1.8s ease;background:linear-gradient(180deg,rgba(5,7,13,0) 60%,rgba(5,7,13,.4) 100%)}
-.intro-ui h1{font:400 clamp(22px,4.2vw,64px)/1.1 Syncopate,sans-serif;letter-spacing:.14em;margin:14px 0 0;text-transform:uppercase;text-shadow:0 4px 50px rgba(0,0,0,.6)}
-.intro-ui p{margin:16px 0 28px;max-width:46ch;color:#c4cbdb;font-weight:300;font-size:clamp(14px,1.6vw,18px)}
-#enter{pointer-events:auto;padding:14px 44px;font-size:15px;letter-spacing:.16em;border-radius:99px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.5);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
-#enter:hover{background:#fff;color:#05070d}
-body:not(.intro) .intro-ui{opacity:0;transform:translateY(-24px)}body:not(.intro) #enter{pointer-events:none}
-.brand,.read,#globe,.ctl,.hint{transition:opacity 1.2s ease 1.6s}
-body.intro .brand,body.intro .read,body.intro #globe,body.intro .ctl,body.intro .hint{opacity:0;pointer-events:none}
-body.intro main{display:none}
-body,button,select,input,h2,h3,.brand h1,.intro-ui p{font-family:Outfit,system-ui,sans-serif!important}
-.tag{position:absolute;pointer-events:none;color:#e9ecf3;font:300 14px/1.35 Outfit,sans-serif;letter-spacing:.04em;transition:opacity 1s ease;text-shadow:0 1px 12px rgba(0,0,0,.85);border-left:1px solid rgba(255,255,255,.55);padding-left:10px}.tag b{display:block;font-weight:600;font-size:16px;letter-spacing:.16em}.tag small{color:#b4bdd0;font-size:13px}
-body:not(.intro) .tag{opacity:0}
-[data-glyph]{color:var(--sun);display:inline-flex;align-items:center}[data-glyph] svg{width:28px;height:15px}.biglyph svg{width:92px;height:48px}.biglyph{filter:drop-shadow(0 0 18px rgba(255,201,74,.55))}
-#enter{display:inline-flex;align-items:center;gap:12px}
-.eye{width:64px;height:40px;overflow:visible;opacity:.45;transition:opacity .4s,filter .4s;flex:none}.eye *{fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}.eye .almond{fill:rgba(255,255,255,.05)}.eye .pupil{fill:currentColor;stroke:none}.eye .glint{fill:#fff;stroke:none}
-.eye .lid{transform-box:fill-box;transform-origin:center;transform:scaleY(.07);transition:transform .45s cubic-bezier(.3,.7,.2,1)}.eye.open{opacity:1;filter:drop-shadow(0 0 6px currentColor)}.eye.open .lid{transform:scaleY(1)}
-.sunEye{color:var(--sun)}.moonEye{color:var(--earth)}
-.eyeblk{display:flex;align-items:center;gap:14px;padding:8px 0;border-bottom:1px solid var(--line)}.eyeblk>div{color:var(--ink);min-width:0}.eyeblk h4{margin:0;font:600 14px Outfit,sans-serif}.eyeblk em{display:block;font-style:normal;color:var(--mut);font-size:12px}.eyeblk small{color:var(--mut);font-size:12px}.st{display:block;font-weight:600;font-size:13px;margin:3px 0 1px}.st.go{color:var(--ok)}.st.stop{color:var(--bad)}
-.akhet{display:flex;align-items:center;gap:8px;margin-top:8px;padding:6px 10px;border-radius:8px;font-size:12px;color:var(--sun);opacity:0;border:1px solid transparent;transition:opacity .4s}.akhet.on{opacity:1;border-color:rgba(255,201,74,.5);background:rgba(255,201,74,.08);animation:pulse 1.8s ease-in-out infinite}@keyframes pulse{50%{box-shadow:0 0 18px rgba(255,201,74,.45)}}@media(prefers-reduced-motion:reduce){.akhet.on{animation:none}}
-.eyes2{display:flex;gap:10px;margin:4px 0 10px}.e1{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 4px;border-radius:10px;border:1px solid var(--line)}.e1 b{font-size:22px;font-variant-numeric:tabular-nums}.e1 small{color:var(--mut);font-size:12px;text-align:center}.e1 .eye{width:56px;height:34px}
-@media(max-width:700px){#globe{display:none}.read{top:auto;bottom:150px;right:18px;left:18px}.brand{right:18px;max-width:none}}
-.launch-btn { display: inline-block; margin-top: 10px; background-color: var(--sun); color: #05070d; padding: 8px 14px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 13px; text-align: center; transition: opacity 0.2s; }
-.launch-btn:hover { opacity: 0.9; }
-
-.bar{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin:10px 0;padding:12px 14px}.grid.two{grid-template-columns:repeat(auto-fit,minmax(360px,1fr))}.pan h2{margin-top:0}
-.badge{display:inline-block;font-size:12px;padding:1px 9px;border-radius:99px;margin:6px 0}.real{background:rgba(79,208,138,.18);color:var(--ok)}.fake{background:rgba(255,107,94,.18);color:var(--bad)}
-.cust{display:flex;gap:8px}.cust[hidden]{display:none}.cust input{width:100%}.pan label{display:block;color:var(--mut);font-size:12px;margin-top:8px}.pan input[type=range]{width:100%;accent-color:var(--sun);padding:0}
-.pan canvas{width:100%;margin-top:10px;border-radius:10px;background:#04060b;border:1px solid var(--line)}.cap{color:var(--mut);font-size:12px;margin:6px 0 0}.eyes{display:flex;gap:10px;margin:8px 0}.e1 small{color:var(--mut)}
-table{width:100%;border-collapse:collapse}td,th{padding:5px 8px;border-bottom:1px solid var(--line);text-align:right}th:first-child,td:first-child{text-align:left}
-details{margin:8px 0}summary{cursor:pointer;color:var(--sun)}details p{color:var(--mut);margin:6px 0}
-#who{display:flex;gap:6px;margin:8px 0}#who button.act{background:var(--sun);color:#05070d;border-color:var(--sun)}
-.story{display:grid;max-width:54ch;min-height:7em;margin:14px 0 22px;place-items:center}.story p{grid-area:1/1;margin:0!important;opacity:0;animation:sq 6s ease var(--d) forwards}.story p.last{animation:sl 2s ease var(--d) forwards}
-@keyframes sq{0%{opacity:0;transform:translateY(10px)}15%,80%{opacity:1;transform:none}100%{opacity:0}}@keyframes sl{to{opacity:1}}.story b{color:var(--sun);font-weight:600}
 .hdr{display:flex;gap:16px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:12px 18px;border-bottom:1px solid var(--line);background:rgba(5,7,13,.85);position:sticky;top:0;z-index:5;backdrop-filter:blur(10px)}
 .hdr a{color:var(--sun);text-decoration:none}.hdr .logo{display:flex;gap:10px;align-items:center;font-weight:600;letter-spacing:.06em}
 .tbl{width:100%;border-collapse:collapse}.tbl th,.tbl td{padding:6px 10px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}.tbl th:first-child,.tbl td:first-child{text-align:left}
 .tbl td.best{color:var(--ok);font-weight:600}.tbl tr.top td{color:var(--sun)}.picks{display:flex;flex-wrap:wrap;gap:6px 16px;margin:10px 0}.picks label{flex-direction:row;align-items:center;gap:6px;color:var(--ink);font-size:13px}
-main section{margin-top:26px}.box{padding:14px 16px;margin:12px 0}.row input[type=number],.row input[type=text]{width:120px}</style></head><body><script>onerror=function(m,u,l){document.body.insertAdjacentHTML("afterbegin","<div style=\"background:#5a1d18;color:#fff;padding:10px 16px;position:relative;z-index:99\">Something went wrong: "+m+" (line "+l+"). Please send this message to the developer.</div>")}</script><header class="hdr"><a class="logo" href="./"><span data-glyph></span>TWO EYES OF HORUS</a><span style="color:var(--mut)">Mission Planner · build 3</span><a href="./">← Back to the cinematic view</a></header>
+main section{margin-top:26px}.box{padding:14px 16px;margin:12px 0}.row input[type=number],.row input[type=text]{width:120px}
+.hdr .kb{padding:6px 14px}.hdr .kb small{max-width:none}.hdr .replay{font-size:13px}
+.row label{font-size:13px}.picks label{font-size:14px;min-height:34px}
+</style></head><body><script>onerror=function(m,u,l){document.body.insertAdjacentHTML("afterbegin","<div style=\"background:#5a1d18;color:#fff;padding:10px 16px;position:relative;z-index:99\">Something went wrong: "+m+" (line "+l+"). Please send this message to the developer.</div>")}</script><header class="hdr"><a class="logo" href="planner.html" title="Back to the top of the Mission Planner"><span data-glyph></span>TWO EYES OF HORUS</a><span style="color:var(--mut)">Mission Planner · build 6</span><a href="index.html" class="replay" title="Watch the Eyes of Horus story again">🎬 Replay the story</a><a href="index.html?view=3d" class="launch-btn kb" title="Stand on the Moon in 3D and watch the Sun and Earth"><b><span class="ic">🌙</span>See the Moon in 3D</b><small>Stand there and look around</small></a></header>
 <main>
 <h2>Compare sites and dates fast</h2>
 <p class="sub">Pick landing sites and a start date. For every hour of the mission the planner asks two questions: can the Sun be seen above the local skyline (power), and can Earth be seen (a direct line home)? When both answers are yes, both Eyes of Horus are open.</p>
-<section class="glass box"><div class="row"><label>Start date<input type="date" id="start"></label><label>Mission length (Earth days)<input type="number" id="len" value="14" min="1" max="60"></label><label>Rank sites by<select id="crit"></select></label><button id="go">Compute</button></div>
-<div class="picks" id="pick"></div>
-<div class="row"><label>Add your own site: latitude<input type="number" id="clat" step=".01" value="-86"></label><label>longitude (east +)<input type="number" id="clon" step=".01" value="20"></label><label>name<input type="text" id="cname" placeholder="My site"></label><button id="cadd">Add site</button></div></section>
+<section class="glass box"><b>How to use this page</b><div class="guide"><div><span>1️⃣</span><b>Choose when<em>Pick a start date and how many days you will stay.</em></b></div><div><span>2️⃣</span><b>Choose places<em>Tick the landing sites you want to compare.</em></b></div><div><span>3️⃣</span><b>Press Compute<em>The winner shows up, with tables and pictures.</em></b></div><div><span>🌙</span><b>Want to see it?<em>Press the yellow “See the Moon in 3D” button at the top.</em></b></div></div></section>
+<section class="glass box"><div class="row"><label>📅 Start date (when do we land?)<input type="date" id="start" title="The day the mission starts"></label><label>⏱ How many days we stay<input type="number" id="len" value="14" min="1" max="60" title="Number of Earth days"></label><label>🏆 Which site is best? Choose the rule<select id="crit" title="Choose how to decide the winner"></select></label><button id="go" class="kb go" title="Work out the best site for these dates"><b><span class="ic">▶</span>Compute</b><small>Find the best site</small></button></div>
+<p class="mini">✅ Tick the landing sites you want to compare:</p><div class="picks" id="pick"></div>
+<div class="row"><label>🧭 Add your own place: latitude (south is −)<input type="number" id="clat" step=".01" value="-86"></label><label>🧭 longitude (east is +)<input type="number" id="clon" step=".01" value="20"></label><label>✏️ Give it a name<input type="text" id="cname" placeholder="My site"></label><button id="cadd" class="kb" title="Put your own place on the list"><b><span class="ic">➕</span>Add my place</b><small>Put it on the list</small></button></div></section>
 <section class="glass box" id="best"></section>
 <section><h2>Side by side</h2><p class="sub">Green numbers are the best in each row. Bars: gold = Sun, blue = Earth, green = both together.</p><div class="wrap"><table class="tbl" id="cmpT"></table></div><div class="wrap"><canvas id="cmpC"></canvas></div></section>
 <section><h2>Timeline of every site</h2><p class="sub">One row per site and per eye. Colored = visible, dark = hidden. Time runs left to right across the mission.</p><div class="wrap"><canvas id="stripC"></canvas></div></section>
 <section><h2>Same site, different dates</h2><p class="sub">The launch slipped? Pick one site and up to three start dates to see how much changes.</p>
-<div class="row"><label>Site<select id="tsite"></select></label><label>Date A<input type="date" id="pa"></label><label>Date B<input type="date" id="pb"></label><label>Date C<input type="date" id="pc"></label><label>Length (Earth days)<input type="number" id="tlen" value="14" min="1" max="60"></label><button id="tgo">Compare dates</button></div>
+<div class="row"><label>📍 Place<select id="tsite"></select></label><label>📅 Date A<input type="date" id="pa"></label><label>📅 Date B<input type="date" id="pb"></label><label>📅 Date C<input type="date" id="pc"></label><label>⏱ Days we stay<input type="number" id="tlen" value="14" min="1" max="60"></label><button id="tgo" class="kb go" title="See what changes if we launch on different days"><b><span class="ic">📅</span>Compare dates</b><small>What if we launch later?</small></button></div>
 <div class="wrap"><table class="tbl" id="timeT"></table></div><div class="wrap"><canvas id="timeC" style="display:none"></canvas></div></section>
 <section><h2>Find the best landing window</h2><p class="sub">Tries every start date in a range, for every site, and shows when both eyes stay open the longest.</p>
-<div class="row"><label>First start date<input type="date" id="sfrom"></label><label>Days to scan<input type="number" id="srange" value="90" min="5" max="365"></label><label>Mission length (Earth days)<input type="number" id="slen" value="14" min="1" max="60"></label><button id="sgo">Scan</button></div>
+<div class="row"><label>📅 First start date<input type="date" id="sfrom"></label><label>🔎 How many days to search<input type="number" id="srange" value="90" min="5" max="365"></label><label>⏱ Days we stay<input type="number" id="slen" value="14" min="1" max="60"></label><button id="sgo" class="kb go" title="Try every start day and show the best landing days"><b><span class="ic">🔍</span>Search</b><small>Find the best days to land</small></button></div>
 <div id="scanOut"></div><div class="wrap"><canvas id="scanC"></canvas></div></section>
-<div class="warn" id="warn"></div></main><script>
+<section class="glass box" id="legend"><h2 style="margin-top:0">What is each page for? What do the pictures, numbers and symbols mean?</h2>
+<div class="guide">
+<div><span>🚀</span><b>Mission Planner (this home page)<em>Compare landing sites and dates. It answers: where and when are both Eyes open the most?</em></b></div>
+<div><span>🌙</span><b>Moon in 3D (yellow button, top)<em>Stand on the Moon, look around, and move time to watch the Sun and Earth rise and set.</em></b></div>
+<div><span>☀️</span><b>Sun eye (gold)<em>Open when the Sun is above the skyline. The Sun gives power.</em></b></div>
+<div><span>🌍</span><b>Moon eye (blue)<em>Open when Earth is above the skyline. Earth is where we send our messages.</em></b></div>
+<div><span>✅</span><b>Both open (green)<em>Sun and Earth can both be seen. This is the best time to work.</em></b></div>
+<div><span>%</span><b>Percent numbers<em>Sun %, Earth % and Both % tell what share of the mission hours that Eye is open. Higher is better.</em></b></div>
+<div><span>🌑</span><b>Longest night<em>The longest time in a row with no Sun. Shorter is better.</em></b></div>
+<div><span>📡</span><b>Longest signal gap<em>The longest time in a row with no line to Earth. Shorter is better.</em></b></div>
+<div><span>🔋</span><b>Power index<em>Like Sun %, but a higher Sun counts more. Bigger means more power.</em></b></div>
+<div><span>📊</span><b>Bar chart<em>Gold bar = Sun, blue bar = Earth, green bar = both together.</em></b></div>
+<div><span>🟨</span><b>Timeline strips<em>Colored = the Eye is open at that hour. Dark = hidden. Time runs left to right.</em></b></div>
+<div><span>📈</span><b>Line chart<em>Shows how the green “both open” share changes when you start on different days.</em></b></div>
+<div><span>🧭</span><b>Latitude and longitude<em>The address on the Moon. South latitude is minus (−). East longitude is plus (+).</em></b></div>
+<div><span>∠</span><b>Degrees (°)<em>How high something is above the skyline. 0° is flat on the horizon, 90° is straight up.</em></b></div>
+</div></section>
+<div class="warn" id="warn"></div></main><script src="shared.js"></script>
+<script>
 
-const $=id=>document.getElementById(id),D=Math.PI/180,N=720;
-const SITES=[{id:'mal',n:'Malapert Massif (south pole)',lat:-85.99,lon:.12},{id:'hay',n:'Haworth rim (south pole)',lat:-87.45,lon:-5},{id:'nob',n:'Nobile Rim 1 (Artemis III)',lat:-85.4,lon:31.4},
-{id:'con',n:'Connecting Ridge (Artemis III)',lat:-89.45,lon:-137.1},{id:'sha',n:'Shackleton rim (south pole)',lat:-89.54,lon:129.8},{id:'mou',n:'Mons Mouton (IM-2)',lat:-84.8,lon:29.2},{id:'mpa',n:'Malapert A (IM-1)',lat:-80.13,lon:1.44},
-{id:'cha',n:'Chandrayaan-3 landing',lat:-69.3733,lon:32.3189},{id:'ch4',n:"Chang'e-4",lat:-45.4446,lon:177.5991},{id:'bg1',n:'Blue Ghost 1 (Mare Crisium)',lat:18.56,lon:61.81},
-{id:'a11',n:'Apollo 11 (Tranquility)',lat:.6741,lon:23.473},{id:'a12',n:'Apollo 12',lat:-3.0128,lon:-23.4219},{id:'a14',n:'Apollo 14',lat:-3.6453,lon:-17.4714},{id:'a15',n:'Apollo 15 (Hadley)',lat:26.1322,lon:3.633},
-{id:'a16',n:'Apollo 16',lat:-8.9734,lon:15.5011},{id:'a17',n:'Apollo 17',lat:20.1908,lon:30.7717},{id:'cus',n:'Custom coordinates…',lat:-85,lon:0}];
-const hzg=(b,a,p)=>Array.from({length:360},(_,i)=>{const t=i*D;return Math.max(0,b+a*(.5*Math.sin(3*t+p)+.3*Math.sin(7*t+2*p)+.2*Math.sin(13*t+3*p)))});
-const PH={mal:hzg(1.2,1.6,0),hay:hzg(2.2,2.4,1),nob:hzg(1.8,2,2),con:hzg(.9,1.2,3),sha:hzg(1.6,1.8,4),cha:hzg(.5,.8,5),a15:hzg(1,1.5,6),a11:Array(360).fill(0)};
-/* ---- LOLA terrain: loaded once, then a skyline is computed for ANY lat/lon in the browser (~20 ms) ---- */
-const RM=1737400;let DEM={},HZC={};
-async function ld(u){const r=await fetch(u);if(!r.ok)throw new Error(u+' not found ('+r.status+')');let b=new Uint8Array(await r.arrayBuffer());if(b[0]===31&&b[1]===139)b=new Uint8Array(await new Response(new Blob([b]).stream().pipeThrough(new DecompressionStream('gzip'))).arrayBuffer());return new Int16Array(b.buffer,b.byteOffset,b.byteLength>>1)}
-fetch('data/dem_meta.json').then(r=>r.json()).then(async m=>{DEM={...m};DEM.g=await ld('data/dem_global.bin.gz');if(DEM.g.length!==DEM.gw*DEM.gh)throw new Error('global map has '+DEM.g.length+' values, expected '+DEM.gw*DEM.gh+' (use LDEM_16.IMG)');
- try{DEM.s=await ld('data/dem_south.bin.gz');if(DEM.s.length!==DEM.pn*DEM.pn){const q=DEM.s.length;DEM.s=null;DEM.err='polar map size does not match n='+DEM.pn+' ('+q+' values)'}}catch(e){DEM.err=String(e.message||e)}HZC={};all()}).catch(e=>{DEM={err:String(e.message||e)};all()});
-function bil(a,w,h,x,y,wrap){const x0=Math.floor(x),y0=Math.floor(y),fx=x-x0,fy=y-y0,X=i=>wrap?(i%w+w)%w:Math.max(0,Math.min(w-1,i)),Y=j=>Math.max(0,Math.min(h-1,j));
-return a[Y(y0)*w+X(x0)]*(1-fx)*(1-fy)+a[Y(y0)*w+X(x0+1)]*fx*(1-fy)+a[Y(y0+1)*w+X(x0)]*(1-fx)*fy+a[Y(y0+1)*w+X(x0+1)]*fx*fy}
-function dhgt(la,lo){if(DEM.s&&la<-80*D){const r=2*RM*Math.tan((Math.PI/2+la)/2);return .5*bil(DEM.s,DEM.pn,DEM.pn,(DEM.pn-1)/2+r*Math.sin(lo)/DEM.pm,(DEM.pn-1)/2-r*Math.cos(lo)/DEM.pm)}
- return .5*bil(DEM.g,DEM.gw,DEM.gh,((lo/D%360+360)%360)*DEM.gp-.5,(90-la/D)*DEM.gp-.5,true)}
-function skyline(lat,lon){const la=lat*D,lo=lon*D,h0=dhgt(la,lo)+2,th=[],out=[];for(let d=.5;d<=30;d+=.5)th.push(d*1e3/RM);for(let d=32;d<=200;d+=2)th.push(d*1e3/RM);
- for(let a=0;a<360;a++){const az=a*D;let best=-90;for(const t of th){const ct=Math.cos(t),st=Math.sin(t),l2=Math.asin(Math.sin(la)*ct+Math.cos(la)*st*Math.cos(az)),o2=lo+Math.atan2(Math.sin(az)*st*Math.cos(la),ct-Math.sin(la)*Math.sin(l2)),z=dhgt(l2,o2),
-  el=Math.atan2((RM+z)*ct-(RM+h0),(RM+z)*st)/D;if(el>best)best=el}out.push(best)}return out}
-const hzFor=(id,lat,lon)=>{if(!DEM.g)return PH[id]||Array(360).fill(0);const k=lat.toFixed(3)+','+lon.toFixed(3);return HZC[k]||(HZC[k]=skyline(lat,lon))};
-/* ---- math: JPL-family ephemeris (astronomy-engine) + IAU 2009 Moon orientation ---- */
-const rz=(v,a)=>{const c=Math.cos(a),s=Math.sin(a);return[c*v[0]+s*v[1],-s*v[0]+c*v[1],v[2]]},rx=(v,a)=>{const c=Math.cos(a),s=Math.sin(a);return[v[0],c*v[1]+s*v[2],-s*v[1]+c*v[2]]};
-const nm=a=>{const l=Math.hypot(...a);return a.map(v=>v/l)},dot=(a,b)=>a[0]*b[0]+a[1]*b[1]+a[2]*b[2];
-function frame(dt){const d=dt.getTime()/864e5-10957.5,T=d/36525,E=(a,b)=>(a+b*d)*D,S=Math.sin,C=Math.cos;
-const e1=E(125.045,-.0529921),e2=E(250.089,-.1059842),e3=E(260.008,13.0120009),e4=E(176.625,13.3407154),e5=E(357.529,.9856003),e6=E(311.589,26.4057084),e7=E(134.963,13.064993),e8=E(276.617,.3287146),e9=E(34.226,1.7484877),e10=E(15.134,-.1589763),e11=E(119.743,.0036096),e12=E(239.961,.1643573),e13=E(25.053,12.9590088);
-const ra=269.9949+.0031*T-3.8787*S(e1)-.1204*S(e2)+.07*S(e3)-.0172*S(e4)+.0072*S(e6)-.0052*S(e10)+.0043*S(e13);
-const de=66.5392+.013*T+1.5419*C(e1)+.0239*C(e2)-.0278*C(e3)+.0068*C(e4)-.0029*C(e6)+.0009*C(e7)+.0008*C(e10)-.0009*C(e13);
-const W=38.3213+13.17635815*d+3.561*S(e1)+.1208*S(e2)-.0642*S(e3)+.0158*S(e4)+.0252*S(e5)-.0066*S(e6)-.0047*S(e7)-.0046*S(e8)+.0028*S(e9)+.0052*S(e10)+.004*S(e11)+.0019*S(e12)-.0044*S(e13);
-const m=Astronomy.GeoMoon(dt),s=Astronomy.GeoVector(Astronomy.Body.Sun,dt,true),mv=[m.x,m.y,m.z],sun=[s.x-m.x,s.y-m.y,s.z-m.z],ear=mv.map(x=>-x);
-const B=v=>rz(rx(rz(v,(90+ra)*D),(90-de)*D),W*D);
-return{B,s:nm(B(sun)),e:nm(B(ear)),sr:.2666/Math.hypot(...sun),er:Math.asin(6371/(Math.hypot(...mv)*149597870.7))/D}}
-function azel(v,la,lo){const p=la*D,l=lo*D,up=[Math.cos(p)*Math.cos(l),Math.cos(p)*Math.sin(l),Math.sin(p)],no=[-Math.sin(p)*Math.cos(l),-Math.sin(p)*Math.sin(l),Math.cos(p)],ea=[-Math.sin(l),Math.cos(l),0];
-return{el:Math.asin(Math.max(-1,Math.min(1,dot(v,up))))/D,az:(Math.atan2(dot(v,ea),dot(v,no))/D+360)%360}}
-const mask=(h,az)=>{const n=h.length,p=(az%360+360)%360/360*n,i=Math.floor(p)%n,t=p-Math.floor(p);return h[i]*(1-t)+h[(i+1)%n]*t};
-const FR=new Map();function frames(t0){if(!FR.has(t0)){FR.set(t0,Array.from({length:N},(_,i)=>frame(new Date(t0+i*36e5))));if(FR.size>8)FR.delete(FR.keys().next().value)}return FR.get(t0)}
-/* ---- helpers ---- */
-const fd=h=>h==null?'—':h<48?Math.round(h)+' h':(h/24).toFixed(1)+' Earth days';
-const flip=(a,i)=>{for(let j=i+1;j<N;j++)if(a[j]!==a[i])return j-i;return null};
-const longest=(a,v)=>{let b=0,c=0;for(const x of a){x===v?b=Math.max(b,++c):c=0}return b};
-const pct=a=>a.filter(Boolean).length/N*100;
-const timer=(a,i,up,dn)=>{const x=flip(a,i);return x==null?(a[i]?'stays up for at least '+fd(N-1-i):'stays hidden for at least '+fd(N-1-i)):(a[i]?up:dn)+' in '+fd(x)};
 
 function all(){if(window.run)run()}
-/* ---------- BRAND: Eye of Horus (wedjat) and Akhet glyph ---------- */
-const WEDJAT="<svg class='eye' viewBox='0 0 72 44' aria-hidden='true'><path class='brow' d='M8 9 Q36 -1 64 9'/><g class='lid'><path class='almond' d='M6 22 Q36 4 66 22 Q36 40 6 22Z'/><circle class='pupil' cx='36' cy='22' r='8'/><circle class='glint' cx='39' cy='19' r='2.2'/></g><path class='tear' d='M44 34 L50 42 Q56 44 58 38'/><path class='curl' d='M28 34 Q22 42 14 40 Q8 38 11 33 Q14 30 17 33'/></svg>";
-const GLYPH="<svg viewBox='0 0 80 42' aria-hidden='true'><path d='M2 38 L16 10 Q40 34 64 10 L78 38 Z' fill='none' stroke='currentColor' stroke-width='3' stroke-linejoin='round'/><circle cx='40' cy='14' r='7' fill='currentColor'/></svg>";
-const eyeP=p=>WEDJAT.replace("class='eye'","class='eye open'").replace("class='lid'",`class='lid' style='transform:scaleY(${Math.max(.07,p/100).toFixed(2)})'`);
-const eyes2=r=>`<div class="eyes2"><div class="e1 sunEye">${eyeP(r.sp)}<b>${r.sp.toFixed(0)}%</b><small>Sun eye open: power</small></div><div class="e1 moonEye">${eyeP(r.ep)}<b>${r.ep.toFixed(0)}%</b><small>Moon eye open: link home</small></div></div>`;
-document.querySelectorAll('[data-eye]').forEach(n=>n.innerHTML=WEDJAT);document.querySelectorAll('[data-glyph]').forEach(n=>n.innerHTML=GLYPH);
 
 document.querySelectorAll('[data-glyph]').forEach(n=>n.innerHTML=GLYPH);
 const FC=new Map(),frameAt=ms=>{let f=FC.get(ms);if(!f){f=frame(new Date(ms));FC.set(ms,f)}return f};
