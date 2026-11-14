@@ -81,7 +81,7 @@ details{margin:8px 0}summary{cursor:pointer;color:var(--sun)}details p{color:var
   <h1><span data-glyph></span>Two Eyes of Horus</h1>
   <p>Akhet, the horizon. Pick a south pole site and watch both eyes open and close.</p>
   <div id="who"><button class="act" data-k="A">Site A</button><button data-k="B">Site B</button></div><select id="site" aria-label="Landing site"></select>
-  <a href="https://hnk6pqmezhjxcc7gv72ww2.streamlit.app" target="_blank" class="launch-btn">Launch Mission Planner 🚀</a>
+  <a href="planner.html" class="launch-btn">Open Mission Planner</a>
 </div>
 <div class="read glass">
 <div class="eyeblk sunEye"><span data-eye></span><div><h4>Sun eye</h4><em>Solar power</em><b id="pwr" class="st">-</b><small>Sun elevation <span id="sunEl">-</span></small></div></div>
@@ -116,8 +116,10 @@ details{margin:8px 0}summary{cursor:pointer;color:var(--sun)}details p{color:var
 <script>
 const D=Math.PI/180,$=id=>document.getElementById(id),N=720;let playing=false,expert=false,yaw=0,pitch=5*D,HK='A';
 const SITES=[{id:'mal',n:'Malapert Massif (south pole)',lat:-85.99,lon:.12},{id:'hay',n:'Haworth rim (south pole)',lat:-87.45,lon:-5},{id:'nob',n:'Nobile Rim 1 (Artemis III)',lat:-85.4,lon:31.4},
-{id:'con',n:'Connecting Ridge (Artemis III)',lat:-89.45,lon:-137.1},{id:'sha',n:'Shackleton rim (south pole)',lat:-89.54,lon:129.8},{id:'cha',n:'Chandrayaan-3 landing',lat:-69.37,lon:32.32},
-{id:'a15',n:'Apollo 15 (Hadley)',lat:26.13,lon:3.63},{id:'a11',n:'Apollo 11 (Tranquility)',lat:.67,lon:23.47},{id:'cus',n:'Custom coordinates…',lat:-85,lon:0}];
+{id:'con',n:'Connecting Ridge (Artemis III)',lat:-89.45,lon:-137.1},{id:'sha',n:'Shackleton rim (south pole)',lat:-89.54,lon:129.8},{id:'mou',n:'Mons Mouton (IM-2)',lat:-84.8,lon:29.2},{id:'mpa',n:'Malapert A (IM-1)',lat:-80.13,lon:1.44},
+{id:'cha',n:'Chandrayaan-3 landing',lat:-69.3733,lon:32.3189},{id:'ch4',n:"Chang'e-4",lat:-45.4446,lon:177.5991},{id:'bg1',n:'Blue Ghost 1 (Mare Crisium)',lat:18.56,lon:61.81},
+{id:'a11',n:'Apollo 11 (Tranquility)',lat:.6741,lon:23.473},{id:'a12',n:'Apollo 12',lat:-3.0128,lon:-23.4219},{id:'a14',n:'Apollo 14',lat:-3.6453,lon:-17.4714},{id:'a15',n:'Apollo 15 (Hadley)',lat:26.1322,lon:3.633},
+{id:'a16',n:'Apollo 16',lat:-8.9734,lon:15.5011},{id:'a17',n:'Apollo 17',lat:20.1908,lon:30.7717},{id:'cus',n:'Custom coordinates…',lat:-85,lon:0}];
 const hzg=(b,a,p)=>Array.from({length:360},(_,i)=>{const t=i*D;return Math.max(0,b+a*(.5*Math.sin(3*t+p)+.3*Math.sin(7*t+2*p)+.2*Math.sin(13*t+3*p)))});
 const PH={mal:hzg(1.2,1.6,0),hay:hzg(2.2,2.4,1),nob:hzg(1.8,2,2),con:hzg(.9,1.2,3),sha:hzg(1.6,1.8,4),cha:hzg(.5,.8,5),a15:hzg(1,1.5,6),a11:Array(360).fill(0)};
 /* ---- LOLA terrain: loaded once, then a skyline is computed for ANY lat/lon in the browser (~20 ms) ---- */
@@ -130,7 +132,7 @@ return a[Y(y0)*w+X(x0)]*(1-fx)*(1-fy)+a[Y(y0)*w+X(x0+1)]*fx*(1-fy)+a[Y(y0+1)*w+X
 function dhgt(la,lo){if(DEM.s&&la<-80*D){const r=2*RM*Math.tan((Math.PI/2+la)/2);return .5*bil(DEM.s,DEM.pn,DEM.pn,(DEM.pn-1)/2+r*Math.sin(lo)/DEM.pm,(DEM.pn-1)/2-r*Math.cos(lo)/DEM.pm)}
  return .5*bil(DEM.g,DEM.gw,DEM.gh,((lo/D%360+360)%360)*DEM.gp-.5,(90-la/D)*DEM.gp-.5,true)}
 function skyline(lat,lon){const la=lat*D,lo=lon*D,h0=dhgt(la,lo)+2,th=[],out=[];for(let d=.5;d<=30;d+=.5)th.push(d*1e3/RM);for(let d=32;d<=200;d+=2)th.push(d*1e3/RM);
- for(let a=0;a<360;a++){const az=a*D;let best=0;for(const t of th){const ct=Math.cos(t),st=Math.sin(t),l2=Math.asin(Math.sin(la)*ct+Math.cos(la)*st*Math.cos(az)),o2=lo+Math.atan2(Math.sin(az)*st*Math.cos(la),ct-Math.sin(la)*Math.sin(l2)),z=dhgt(l2,o2),
+ for(let a=0;a<360;a++){const az=a*D;let best=-90;for(const t of th){const ct=Math.cos(t),st=Math.sin(t),l2=Math.asin(Math.sin(la)*ct+Math.cos(la)*st*Math.cos(az)),o2=lo+Math.atan2(Math.sin(az)*st*Math.cos(la),ct-Math.sin(la)*Math.sin(l2)),z=dhgt(l2,o2),
   el=Math.atan2((RM+z)*ct-(RM+h0),(RM+z)*st)/D;if(el>best)best=el}out.push(best)}return out}
 const hzFor=(id,lat,lon)=>{if(!DEM.g)return PH[id]||Array(360).fill(0);const k=lat.toFixed(3)+','+lon.toFixed(3);return HZC[k]||(HZC[k]=skyline(lat,lon))};
 /* ---- math: JPL-family ephemeris (astronomy-engine) + IAU 2009 Moon orientation ---- */
@@ -316,7 +318,7 @@ function render(k){const id=$('s'+k).value,S=SITES.find(s=>s.id===id),cu=id==='c
  pano(k,hz,o,i);tline(k,o,i);PS[k]={lat,lon};orr[k].upd(o,i,lat,lon,PS[k==='A'?'B':'A'])}
 function ymax(o){return Math.max(12,Math.min(90,Math.ceil(Math.max(...o.sE,...o.eE))+3))}
 const CEN={},FOV=120;
-function pano(k,hz,o,i){const c=$('pa'+k),g=c.getContext('2d'),W=c.width,H=c.height,y0=-2,y1=Math.max(8,Math.ceil(Math.max(...hz)*1.8)+2);if(CEN[k]==null)CEN[k]=o.sA[i];const cen=CEN[k],dd=a=>((a-cen+540)%360)-180,X=a=>dd(a)/FOV*W+W/2,Y=e=>H-(Math.min(e,y1+1)-y0)/(y1-y0)*(H-22)-6,inV=a=>Math.abs(dd(a))<FOV/2+8;
+function pano(k,hz,o,i){const c=$('pa'+k),g=c.getContext('2d'),W=c.width,H=c.height,y0=Math.min(-2,Math.floor(Math.min(...hz))-1),y1=Math.max(8,Math.ceil(Math.max(...hz)*1.8)+2);if(CEN[k]==null)CEN[k]=o.sA[i];const cen=CEN[k],dd=a=>((a-cen+540)%360)-180,X=a=>dd(a)/FOV*W+W/2,Y=e=>H-(Math.min(e,y1+1)-y0)/(y1-y0)*(H-22)-6,inV=a=>Math.abs(dd(a))<FOV/2+8;
  g.clearRect(0,0,W,H);const sky=g.createLinearGradient(0,0,0,H);sky.addColorStop(0,'#000');sky.addColorStop(1,'#0a0f1f');g.fillStyle=sky;g.fillRect(0,0,W,H);
  for(let q=0;q<110;q++){g.fillStyle='rgba(255,255,255,'+(.2+.6*((q*37)%10)/10)+')';g.fillRect((q*97)%W,(q*53)%(H-30),1.5,1.5)}
  for(let j=0;j<N;j+=6){if(o.sE[j]>y0&&inV(o.sA[j])){g.fillStyle='rgba(255,201,74,.4)';g.fillRect(X(o.sA[j])-1,Y(o.sE[j])-1,3,3)}if(o.eE[j]>y0&&inV(o.eA[j])){g.fillStyle='rgba(90,162,255,.45)';g.fillRect(X(o.eA[j])-1,Y(o.eE[j])-1,3,3)}}
