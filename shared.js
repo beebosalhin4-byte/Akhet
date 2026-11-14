@@ -48,3 +48,21 @@ const GLYPH="<svg viewBox='0 0 80 42' aria-hidden='true'><path d='M2 38 L16 10 Q
 const eyeP=p=>WEDJAT.replace("class='eye'","class='eye open'").replace("class='lid'",`class='lid' style='transform:scaleY(${Math.max(.07,p/100).toFixed(2)})'`);
 const eyes2=r=>`<div class="eyes2"><div class="e1 sunEye">${eyeP(r.sp)}<b>${r.sp.toFixed(0)}%</b><small>Sun eye open: power</small></div><div class="e1 moonEye">${eyeP(r.ep)}<b>${r.ep.toFixed(0)}%</b><small>Moon eye open: link home</small></div></div>`;
 document.querySelectorAll('[data-eye]').forEach(n=>n.innerHTML=WEDJAT);document.querySelectorAll('[data-glyph]').forEach(n=>n.innerHTML=GLYPH);
+
+function startTour(steps){steps=steps.filter(s=>{const e=document.querySelector(s.sel);return e&&e.getClientRects().length});if(!steps.length)return;
+ let i=0;const ov=document.createElement('div');ov.id='tour';
+ ov.innerHTML='<div class="tspot"></div><div class="tbub"><div class="tarr"></div><h4></h4><p></p><div class="trow"><button class="kb tb" data-a="x">✕ Close</button><span class="tc"></span><button class="kb tb" data-a="b">◀ Back</button><button class="kb go tb" data-a="n">Next ▶</button></div></div>';
+ document.body.appendChild(ov);const sp=ov.querySelector('.tspot'),bb=ov.querySelector('.tbub'),ar=ov.querySelector('.tarr');
+ function show(){const s=steps[i],e=document.querySelector(s.sel);e.scrollIntoView({block:'center',inline:'nearest'});
+  const place=()=>{const r=e.getBoundingClientRect(),pad=6;sp.style.cssText='left:'+(r.left-pad)+'px;top:'+(r.top-pad)+'px;width:'+(r.width+2*pad)+'px;height:'+(r.height+2*pad)+'px';
+   bb.querySelector('h4').textContent=s.title;bb.querySelector('p').textContent=s.text;bb.querySelector('.tc').textContent=(i+1)+' / '+steps.length;
+   bb.querySelector('[data-a=b]').style.visibility=i?'visible':'hidden';bb.querySelector('[data-a=n]').textContent=i<steps.length-1?'Next ▶':'Done ✓';
+   const W=Math.min(330,innerWidth-20);bb.style.width=W+'px';const bh=bb.offsetHeight,below=r.bottom+bh+28<innerHeight;
+   const top=below?r.bottom+pad+14:Math.max(8,r.top-pad-14-bh),left=Math.max(10,Math.min(innerWidth-W-10,r.left+r.width/2-W/2));
+   bb.style.left=left+'px';bb.style.top=top+'px';ar.className='tarr '+(below?'up':'down');ar.style.left=Math.max(16,Math.min(W-30,r.left+r.width/2-left-8))+'px'};
+  place();setTimeout(place,350)}
+ const close=()=>{ov.remove();removeEventListener('resize',show2);removeEventListener('keydown',key)},show2=()=>show(),key=e=>{if(e.key==='Escape')close()};
+ ov.onclick=e=>{const a=e.target.dataset&&e.target.dataset.a;if(a==='x')close();else if(a==='b'&&i>0){i--;show()}else if(a==='n'){if(i<steps.length-1){i++;show()}else close()}};
+ addEventListener('resize',show2);addEventListener('keydown',key);show()}
+function helpInit(btn,steps){let seen=0;try{seen=localStorage.getItem('tourSeen')}catch(e){}if(!seen)btn.classList.add('pulse');
+ btn.onclick=()=>{btn.classList.remove('pulse');try{localStorage.setItem('tourSeen','1')}catch(e){}startTour(steps())}}

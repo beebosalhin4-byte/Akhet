@@ -14,11 +14,11 @@
 .enterhint{margin-top:12px;font-size:13px;color:#c4cbdb;letter-spacing:.04em}
 .ctl .tl{font-size:12.5px;color:var(--mut)}.ctl label.spdl{display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--mut)}.ctl{gap:8px}
 .brand .mini{max-width:36ch}
-.v3 .brand,.v3 .read,.v3 #globe,.v3 .ctl,.v3 .hint{transition:none!important}</style></head><body class="intro"><script>onerror=function(m,u,l){document.body.insertAdjacentHTML("afterbegin","<div style=\"background:#5a1d18;color:#fff;padding:10px 16px;position:relative;z-index:99\">Something went wrong: "+m+" (line "+l+"). Please send this message to the developer.</div>")}</script>
+.v3 .brand,.v3 .read,.v3 #globe,.v3 .ctl,.v3 .hint{transition:none!important}body.one #panels{grid-template-columns:1fr}body.one #panels>*:nth-child(2){display:none}</style></head><body class="intro"><script>onerror=function(m,u,l){document.body.insertAdjacentHTML("afterbegin","<div style=\"background:#5a1d18;color:#fff;padding:10px 16px;position:relative;z-index:99\">Something went wrong: "+m+" (line "+l+"). Please send this message to the developer.</div>")}</script>
 <div id="fade"></div>
 <section class="hero">
 <canvas id="pov"></canvas>
-<div class="intro-ui"><div class="biglyph" data-glyph></div><h1>Two Eyes of Horus</h1><div class="story"><p style="--d:.5s">In ancient Egypt, the sky god Horus had two eyes.</p><p style="--d:6.5s">The right eye was the <b>Sun</b>: blazing light, the giver of life.</p><p style="--d:12.5s">The left eye was the <b>Moon</b>: wounded, healed, and always watching over the night.</p><p style="--d:18.5s">Where earth meets sky they placed <b>Akhet</b>, the horizon, where light is born and where it dies.</p><p class="last" style="--d:24.5s">At the Moon's south pole the Sun creeps along Akhet and never climbs. Your Sun Eye is power, your Moon Eye is the line home to Earth. Find the landing site where both stay open.</p></div><button id="enter" title="Click to start. This opens the Mission Planner."><span data-glyph></span>Enter</button><div class="enterhint">▶ Click Enter to open the Mission Planner</div></div>
+<div class="intro-ui"><div class="biglyph" data-glyph></div><h1>Two Eyes of Horus</h1><div class="story"><p style="--d:.5s">In ancient Egypt, the sky god Horus had two eyes.</p><p style="--d:6.5s">The right eye was the <b>Sun</b>: blazing light, the giver of life.</p><p style="--d:12.5s">The left eye was the <b>Moon</b>: wounded, healed, and always watching over the night.</p><p style="--d:18.5s">Where earth meets sky they placed <b>Akhet</b>, the horizon, where light is born and where it dies.</p><p class="last" style="--d:24.5s">At the Moon's south pole the Sun creeps along Akhet and never climbs. Your Sun Eye is power, your Moon Eye is the line home to Earth. Find the landing site where both stay open.</p></div><button id="enter" title="Click to start. You will stand on the Moon."><span data-glyph></span>Enter</button><div class="enterhint">▶ Click Enter to stand on the Moon</div></div>
 <div class="tag" id="tagE"><b>EARTH</b><small>384,400 km away</small></div><div class="tag" id="tagM" style="left:5vw;bottom:34vh"><b>THE MOON</b><small>South pole, 89.5°S</small></div>
 <div class="brand glass">
   <h1><span data-glyph></span>Two Eyes of Horus</h1>
@@ -26,7 +26,7 @@
   <p class="mini">📍 You have two landing spots to compare. Tap <b>A</b> or <b>B</b> to choose which one you are standing at.</p>
   <div id="who"><button class="act kb" data-k="A" title="Stand at your first landing spot"><b><span class="ic">📍</span>Site A</b><small>Your first spot</small></button><button class="kb" data-k="B" title="Stand at your second landing spot"><b><span class="ic">📍</span>Site B</b><small>Your second spot</small></button></div>
   <p class="mini">🌙 Pick a place on the Moon:</p><select id="site" aria-label="Choose a place on the Moon" title="Choose a place on the Moon"></select>
-  <a href="planner.html" class="launch-btn kb" title="Go to the Mission Planner to compare places and dates"><b><span class="ic">🚀</span>Back to Mission Planner</b><small>Compare places and dates</small></a>
+  <div class="navbtns"><a href="planner.html" class="launch-btn kb" title="Compare many places and dates to find the best landing time"><b><span class="ic">🚀</span>Mission Planner</b><small>Compare places and dates</small></a><a id="modeLink" class="kb" title="Switch between one site and two sites"></a><button id="helpBtn" class="kb help" title="Show me around this page with arrows and tips"><b><span class="ic">❓</span>Help</b><small>Show me around</small></button></div>
 </div>
 <div class="read glass">
 <div class="eyeblk sunEye"><span data-eye></span><div><h4>Sun eye</h4><em>Solar power</em><b id="pwr" class="st">-</b><small>Sun elevation <span id="sunEl">-</span></small></div></div>
@@ -49,23 +49,6 @@
 <button id="mode" class="kb" title="Switch between simple words and the detailed science numbers"><b><span class="ic">🔬</span>Show expert numbers</b><small>See the detailed science numbers</small></button></div>
 <div class="grid two" id="panels"></div>
 <div class="card glass" style="margin-top:14px"><h2>Side by side</h2><div id="cmp"></div></div>
-<div class="card glass" style="margin-top:14px"><h2>What do these words mean?</h2><p class="mini"><b>What is this page for?</b> You stand on the Moon and look around. Move time to watch the Sun and Earth rise and set above the real mountain skyline. Use the yellow Mission Planner button to compare many sites and dates at once. Numbers: elevation is the height in degrees (0° = horizon). Percent = share of time an Eye is open. Pictures: gold eye = Sun power, blue eye = line to Earth, bars = how much time each site has Sun and Earth.</p>
-<details open><summary>What do the buttons do?</summary><div class="guide">
-<div><span>📍</span><b>Site A / Site B<em>Choose which landing spot you are looking at.</em></b></div>
-<div><span>▶</span><b>Play / Pause<em>Makes time move on its own, or stops it.</em></b></div>
-<div><span>⏱</span><b>Speed<em>How fast time moves while playing.</em></b></div>
-<div><span>☀️</span><b>Look at the Sun<em>Turns the camera toward the Sun.</em></b></div>
-<div><span>🌍</span><b>Look at the Earth<em>Turns the camera toward our home planet.</em></b></div>
-<div><span>🌅</span><b>Next sunrise or sunset<em>Jumps to the next time the Sun comes up or goes down.</em></b></div>
-<div><span>📡</span><b>Next Earth in or out<em>Jumps to the next time Earth appears or hides, so you can or cannot call home.</em></b></div>
-<div><span>🔗</span><b>Same time for both sites<em>Makes A and B share the same date and time.</em></b></div>
-<div><span>🔬</span><b>Show expert numbers<em>Switches on the detailed science numbers.</em></b></div>
-<div><span>🚀</span><b>Back to Mission Planner<em>Compare many places and dates.</em></b></div></div></details>
-<details><summary>Moon day vs Earth day</summary><p>All timers here use Earth days (24 hours each). One Moon day, from one sunrise to the next, lasts about 29.5 Earth days: roughly two weeks of daylight, then two weeks of night.</p></details><details><summary>Sun elevation</summary><p>How high the Sun is above the horizon. 90° is straight up. At the Moon's south pole it never goes above about 1.5°, so sunlight arrives almost sideways and tall hills block it.</p></details>
-<details><summary>Horizon map</summary><p>The top picture shows what you would see standing there: the ground's skyline (the dark shape) all the way around, with the Sun and Earth. The Moon has no air, so there is no glow or bending of light: when something drops behind the skyline, it is simply gone.</p></details>
-<details><summary>Sunset and Earthset timers</summary><p>Hours or days until the Sun or Earth slips behind the skyline (or comes back). One Moon day lasts about 29.5 Earth days, so a sunset can mean a two-week night.</p></details>
-<details><summary>Power and communication</summary><p>Solar panels make power only while the Sun is up, and more when it is higher. A lander can talk straight to Earth only while Earth is above the skyline. Move the date by one day and watch how much changes.</p></details>
-<details><summary>Why does the Earth wobble?</summary><p>The Moon nods and swings a little as it orbits (called libration), so Earth moves slightly in the sky. The app includes this.</p></details></div>
 <div class="warn" id="note"></div>
 </main>
 
@@ -193,9 +176,12 @@ let drag=null;cv.onpointerdown=e=>{if(K<1)return;drag=[e.clientX,e.clientY];cv.s
 cv.onpointermove=e=>{if(!drag)return;yaw+=(e.clientX-drag[0])*.004;pitch=Math.max(-.1,Math.min(1.2,pitch-(e.clientY-drag[1])*.004));drag=[e.clientX,e.clientY]};
 function look(w){const H=HERO();if(!H)return;const q=w==='S'?H.sa:H.ea;yaw=-q.az*D;pitch=Math.max(.02,(q.el+4)*D)}
 function jump(key){const a=SER[HK][key],i=+$('h'+HK).value;for(let k=1;k<N;k++){const j=(i+k)%N;if(a[j]!==a[i]){$('h'+HK).value=j;all();return}}}
-const VIEW3D=/[?&]view=3d/.test(location.search);
+const VIEW3D=/[?&](view=3d|go|mode=compare)/.test(location.search);
 if(VIEW3D){document.body.classList.add('v3');document.body.classList.remove('intro');K=1;KT=-1;introRun=true}
-else $('enter').onclick=()=>{$('enter').disabled=true;$('fade').classList.add('on');setTimeout(()=>{location.href='planner.html'},1050)};
+else $('enter').onclick=()=>{document.body.classList.remove('intro');KT=performance.now();all()};
+const CMP=/[?&]mode=compare/.test(location.search),NO=e=>e&&(e.style.display='none');document.body.classList.add(CMP?'two':'one');
+if(!CMP){NO($('who'));NO($('who').previousElementSibling);NO($('link').closest('label'));NO($('cmp').closest('.card'))}
+$('modeLink').innerHTML=CMP?'<b><span class="ic">📍</span>One site</b><small>Look at a single place</small>':'<b><span class="ic">⚖️</span>Compare two sites</b><small>Two places, side by side</small>';$('modeLink').href=CMP?'index.html?go':'index.html?mode=compare';
 $('play').onclick=()=>{playing=!playing;$('play').innerHTML=playing?'<b><span class="ic">⏸</span>Pause</b><small>Stop the clock</small>':'<b><span class="ic">▶</span>Play</b><small>Make time move</small>'};
 $('slider').oninput=e=>{$('h'+HK).value=e.target.value;if($('link').checked&&HK==='A')$('hB').value=e.target.value;all()};
 $('site').onchange=e=>{$('s'+HK).value=e.target.value;all()};
@@ -217,7 +203,7 @@ function render(k){const id=$('s'+k).value,S=SITES.find(s=>s.id===id),cu=id==='c
  const real=!!DEM.g,hz=hzFor(id,lat,lon),key=[id,lat,lon,t0,real].join();
  if(!SER[k]||SER[k].key!==key){const f=frames(t0),o={key,hz,t0,sE:[],sA:[],eE:[],eA:[],sO:[],eO:[],f};for(const x of f){const a=azel(x.s,lat,lon),b=azel(x.e,lat,lon);o.sE.push(a.el);o.sA.push(a.az);o.eE.push(b.el);o.eA.push(b.az);o.sO.push(a.el+x.sr>mask(hz,a.az));o.eO.push(b.el>mask(hz,b.az))}SER[k]=o}
  const o=SER[k],t=new Date(t0+i*36e5);$('t'+k).textContent=t.toISOString().slice(0,16).replace('T',' ')+' UTC (Earth day '+(i/24).toFixed(1)+')';
- $('b'+k).className='badge '+(real?'real':'fake');if(!real&&DEMSTATE==='loading'){$('b'+k).textContent='Terrain: loading LOLA data… [build 6]'}else $('b'+k).textContent=(real?'Terrain: real LOLA skyline'+(DEM.s?'':' (coarse, '+(DEM.err||'no polar map')+')'):id==='cus'?'Terrain: flat horizon assumed (terrain not loaded'+(DEM.err?': '+DEM.err:'')+')':'Terrain: placeholder (terrain not loaded'+(DEM.err?': '+DEM.err:'')+')')+' [build 6]';
+ $('b'+k).className='badge '+(real?'real':'fake');if(!real&&DEMSTATE==='loading'){$('b'+k).textContent='Terrain: loading LOLA data… [build 7]'}else $('b'+k).textContent=(real?'Terrain: real LOLA skyline'+(DEM.s?'':' (coarse, '+(DEM.err||'no polar map')+')'):id==='cus'?'Terrain: flat horizon assumed (terrain not loaded'+(DEM.err?': '+DEM.err:'')+')':'Terrain: placeholder (terrain not loaded'+(DEM.err?': '+DEM.err:'')+')')+' [build 7]';
  const sOn=o.sO[i],eOn=o.eO[i],pw=sOn?Math.sin(Math.max(0,o.sE[i])*D)*100:0;
  $('e'+k).innerHTML=`<div class="e1 sunEye">${WED}<b>${sOn?'Sun eye open':'Sun eye closed'}</b><small>${sOn?'Power: '+pw.toFixed(1)+'% of full strength':'In shadow'}</small></div><div class="e1 moonEye">${WED}<b>${eOn?'Moon eye open':'Moon eye closed'}</b><small>${eOn?'Can talk to Earth':'Earth hidden'}</small></div>`;
  const[a,b]=$('e'+k).querySelectorAll('.eye');a.classList.toggle('open',sOn);b.classList.toggle('open',eOn);
@@ -253,4 +239,21 @@ $('site').innerHTML=SITES.map(s=>`<option value="${s.id}">${s.n}</option>`).join
 $('note').innerHTML='<b>How it works.</b> Sun and Earth positions come from the astronomy-engine ephemeris (JPL-family accuracy, about 1 arcminute) rotated into the Moon\'s own frame with the IAU 2009 pole and libration. Sunset uses the Sun\'s upper edge; Earthset uses Earth\'s center. There is no air on the Moon, so no refraction is applied. Terrain skylines are computed in your browser for any coordinates from LOLA topography (files made by <code>build_dem.py</code>, whole Moon plus a finer south-pole map): for each of 360 directions it looks out up to 200 km and keeps the highest angle, including the Moon\'s curved edge. Sites marked "placeholder" use invented skylines and are not for real planning. Validate against NASA Quickmap, Moon Trek and JPL Horizons.';
 try{all();look('E')}catch(e){$('note').textContent='Could not load the astronomy library. Check your connection and reload. '+e}
 
+helpInit($('helpBtn'),()=>[
+{sel:'a.launch-btn',title:'🚀 Mission Planner',text:'Press this to compare many landing places and dates, and find when both Eyes are open the most.'},
+{sel:'#modeLink',title:CMP?'📍 One site':'⚖️ Compare two sites',text:CMP?'Press this to go back to looking at just one place.':'Press this to look at two places side by side.'},
+{sel:'#site',title:'🌙 Pick a place',text:'Choose a place on the Moon. Everything on this page changes to match it.'},
+{sel:'#who',title:'📍 Site A and Site B',text:'Choose which of your two places you are standing at.'},
+{sel:'.read',title:'👁 The two Eyes',text:'Gold Sun eye: open when the Sun is above the skyline, so we have power. Blue Moon eye: open when Earth can be seen, so we can talk home.'},
+{sel:'.hint',title:'🖱 Look around',text:'Drag on the 3D picture to turn around. Sun and Earth are drawn bigger than real so you can find them.'},
+{sel:'#play',title:'▶ Play',text:'Makes time move by itself. Press again to pause.'},
+{sel:'#slider',title:'⏳ Time slider',text:'Drag left or right to jump to any moment. The date and time are shown next to it.'},
+{sel:'#lookS',title:'☀️ Look at the Sun',text:'Turns the camera to face the Sun.'},
+{sel:'#lookE',title:'🌍 Look at the Earth',text:'Turns the camera to face our home planet.'},
+{sel:'#nextS',title:'🌅 Next sunrise or sunset',text:'Jumps ahead to the next time the Sun comes up or goes down.'},
+{sel:'#nextE',title:'📡 Next Earth in or out',text:'Jumps ahead to the next time Earth appears or hides.'},
+{sel:'#link',title:'🔗 Same time',text:'Tick this so Site A and Site B move through time together.'},
+{sel:'#mode',title:'🔬 Expert numbers',text:'Shows the detailed science numbers. Percent means the share of time an Eye is open. Degrees (°) mean the height above the skyline, where 0° is the horizon.'},
+{sel:'#panels',title:'📊 Maps and numbers',text:'Below the 3D view: a map of where the Sun and Earth are in the sky, the skyline picture, and a timeline with its table. Colored means the Eye is open, dark means hidden.'},
+{sel:'#cmp',title:'⚖️ Side by side',text:'A table that compares your two places. Green is the best in each row.'}]);
 </script></body></html>
