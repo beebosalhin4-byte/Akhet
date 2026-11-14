@@ -32,7 +32,7 @@
 <div class="eyeblk moonEye"><span data-eye></span><div><h4>Moon eye</h4><em>Line of sight home</em><b id="com" class="st">-</b><small>Earth elevation <span id="earEl">-</span></small></div></div>
 <div class="akhet" id="akhet"><span data-glyph></span>Akhet: the Sun is on the horizon</div></div>
 
-<div class="hint">Drag to look around. Sun and Earth are drawn 3× larger than real so you can see them.</div>
+
 <div class="ctl glass">
 <button id="play" class="kb" aria-label="Play or pause time" title="Start or stop the clock. Time moves on its own while playing."><b><span class="ic">▶</span>Play</b><small>Make time move</small></button>
 <label class="spdl" title="How fast time moves">Speed<select id="spd" aria-label="Speed of time" title="How fast time moves"><option value="3">Slow: 3 hours a second</option><option value="12" selected>Normal: 12 hours a second</option><option value="48">Fast: 2 days a second</option></select></label>
@@ -180,7 +180,7 @@ if(VIEW3D){document.body.classList.add('v3');document.body.classList.remove('int
 else $('enter').onclick=()=>{document.body.classList.remove('intro');KT=performance.now();all()};
 const CMP=/[?&]mode=compare/.test(location.search),NO=e=>e&&(e.style.display='none');document.body.classList.add(CMP?'two':'one');
 if(!CMP){NO($('who'));NO($('link').closest('label'));NO($('cmp').closest('.card'))}
-$('modeLink').innerHTML=CMP?'<b>1 site</b>':'<b>⚖ Compare 2</b>';$('modeLink').title=CMP?'Look at a single place':'Look at two places side by side';$('modeLink').href=CMP?'index.html?go':'index.html?mode=compare';
+$('modeLink').innerHTML=CMP?'<b>👤 1 site</b>':'<b>⚖️ Compare</b>';$('modeLink').title=CMP?'Look at a single place':'Look at two places side by side';$('modeLink').href=CMP?'index.html?go':'index.html?mode=compare';
 $('toStory').onclick=e=>{if(!location.search){e.preventDefault();location.reload()}};
 $('play').onclick=()=>{playing=!playing;$('play').innerHTML=playing?'<b>Pause</b><small>Stop the clock</small>':'<b><span class="ic">▶</span>Play</b><small>Make time move</small>'};
 $('slider').oninput=e=>{$('h'+HK).value=e.target.value;if($('link').checked&&HK==='A')$('hB').value=e.target.value;all()};
@@ -248,7 +248,6 @@ helpInit($('helpBtn'),()=>[
 {sel:'#site',title:'Pick a place',text:'Choose a place on the Moon. Everything on this page changes to match it.'},
 {sel:'#who',title:'Site A and Site B',text:'Choose which of your two places you are standing at.'},
 {sel:'.read',title:'The two Eyes',text:'Gold Sun eye: open when the Sun is above the skyline, so we have power. Blue Moon eye: open when Earth can be seen, so we can talk home.'},
-{sel:'.hint',title:'Look around',text:'Drag on the 3D picture to turn around. Sun and Earth are drawn bigger than real so you can find them.'},
 {sel:'#play',title:'▶ Play',text:'Makes time move by itself. Press again to pause.'},
 {sel:'#slider',title:'Time slider',text:'Drag left or right to jump to any moment. The date and time are shown next to it.'},
 {sel:'#lookS',title:'Look at the Sun',text:'Turns the camera to face the Sun.'},

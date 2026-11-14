@@ -96,3 +96,11 @@ a.kb{text-decoration:none;display:inline-flex}
 body.intro #toStory{opacity:0;pointer-events:none}
 @media(max-width:1000px){.brand,.read{top:62px}#globe{top:350px}}
 @media(max-width:700px){.brand{right:18px;width:auto;max-width:none}}
+
+/* clearer menu buttons */
+a.kb{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.3);color:var(--ink);cursor:pointer}
+a.kb:hover{background:rgba(255,255,255,.2)}
+.brand .navbtns .kb{white-space:nowrap;justify-content:center;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.1)}
+.brand .navbtns .kb.go,.brand .navbtns .launch-btn{background:var(--sun);color:#05070d;border-color:var(--sun)}
+.brand .navbtns .kb:hover{background:rgba(255,255,255,.22)}.brand .navbtns .launch-btn:hover{background:#ffd978}
+#toStory{color:var(--ink)}
