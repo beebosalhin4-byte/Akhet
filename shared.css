@@ -3,7 +3,7 @@
 body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.5 Sora,system-ui,sans-serif}
 .hero{position:relative;height:100svh;min-height:560px;overflow:hidden}
 #pov{position:absolute;inset:0;width:100%;height:100%;cursor:grab;touch-action:none}#pov:active{cursor:grabbing}
-.glass{background:var(--panel);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid var(--line);border-radius:14px}
+.glass{background:rgba(10,14,24,.86);border:1px solid var(--line);border-radius:14px}
 .brand{position:absolute;left:18px;top:18px;padding:14px 16px;max-width:330px}
 .brand h1{margin:0;font:400 19px/1.2 Sora,sans-serif;letter-spacing:.04em;display:flex;align-items:center;gap:10px}
 .brand p{margin:6px 0 10px;color:var(--mut);font-size:13px}
@@ -82,15 +82,17 @@ a.kb{text-decoration:none;display:inline-flex}
 .tarr{position:absolute;width:14px;height:14px;background:#141a2b;border:1px solid rgba(255,255,255,.25);transform:rotate(45deg)}
 .tarr.up{top:-8px;border-right:0;border-bottom:0}.tarr.down{bottom:-8px;border-left:0;border-top:0}
 .help.pulse{animation:hp 1.4s infinite}@keyframes hp{50%{box-shadow:0 0 0 7px rgba(255,201,74,.35)}}
-.navbtns{display:flex;flex-direction:column;gap:8px;align-items:stretch}.navbtns .kb{width:100%}
-/* clearer intro text */
-.intro-ui{background:linear-gradient(180deg,rgba(5,7,13,0) 35%,rgba(5,7,13,.78) 100%)}
-.intro-ui h1{font-weight:700;color:#fff;text-shadow:0 2px 4px rgba(0,0,0,.9),0 4px 40px rgba(0,0,0,.85)}
-.story{padding:18px 26px;border-radius:18px;background:rgba(5,7,13,.62);border:1px solid rgba(255,255,255,.14);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);animation:fi 1.2s ease both;max-width:58ch}
-.intro-ui p{color:#fff;font-weight:400;font-size:clamp(17px,1.9vw,23px);line-height:1.5;text-shadow:0 1px 3px rgba(0,0,0,.9),0 2px 18px rgba(0,0,0,.7)}
-.story b{color:#ffd45e;font-weight:700}
-@keyframes fi{from{opacity:0}to{opacity:1}}
-#enter{background:rgba(5,7,13,.72);border:2px solid #ffd45e;color:#fff;font-weight:600;font-size:17px}
-#enter:hover{background:#ffd45e;color:#05070d}
-.enterhint{color:#fff!important;font-size:15px!important;font-weight:500;text-shadow:0 1px 4px rgba(0,0,0,.95),0 2px 16px rgba(0,0,0,.8)}
-.tag{color:#fff;font-weight:400;font-size:15px;text-shadow:0 1px 3px rgba(0,0,0,.95),0 2px 14px rgba(0,0,0,.9)}.tag b{font-weight:700;font-size:17px}.tag small{color:#fff}
+
+/* ---- compact menu (top-left) ---- */
+.brand{padding:10px 12px;width:min(290px,calc(100vw - 36px));display:flex;flex-direction:column;gap:8px}
+.brand h1{font-size:16px}.brand h1 [data-glyph] svg{width:24px;height:13px}
+.brand select{width:100%}
+.brand .kb{min-height:34px;padding:4px 10px;font-size:13px;flex-direction:row;gap:6px;border-radius:10px}.brand .kb small{display:none}.brand .kb b{font-size:13px}
+#who{display:flex;gap:6px;margin:0}#who button{flex:1}
+.navbtns{display:flex;gap:6px}.navbtns .kb{flex:1;padding:4px 6px}
+/* ---- Return to story ---- */
+#toStory{position:absolute;left:50%;top:14px;transform:translateX(-50%);z-index:6;min-height:34px;padding:4px 14px;flex-direction:row;gap:6px;font-size:13px;background:rgba(10,14,24,.86);border:1px solid var(--line);white-space:nowrap}
+#toStory:hover{transform:translateX(-50%)}
+body.intro #toStory{opacity:0;pointer-events:none}
+@media(max-width:1000px){.brand,.read{top:62px}#globe{top:350px}}
+@media(max-width:700px){.brand{right:18px;width:auto;max-width:none}}
