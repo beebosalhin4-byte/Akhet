@@ -14,7 +14,7 @@
 .enterhint{margin-top:12px;font-size:13px;color:#c4cbdb;letter-spacing:.04em}
 .ctl .tl{font-size:12.5px;color:var(--mut)}.ctl label.spdl{display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--mut)}.ctl{gap:8px}
 .brand .mini{max-width:36ch}
-.v3 .brand,.v3 .read,.v3 #globe,.v3 .ctl,.v3 .hint{transition:none!important}body.one #panels{grid-template-columns:1fr}body.one #panels>*:nth-child(2){display:none}</style></head><body class="intro"><script>onerror=function(m,u,l){document.body.insertAdjacentHTML("afterbegin","<div style=\"background:#5a1d18;color:#fff;padding:10px 16px;position:relative;z-index:99\">Something went wrong: "+m+" (line "+l+"). Please send this message to the developer.</div>")}</script>
+.v3 .brand,.v3 .read,.v3 #globe,.v3 .ctl,.v3 .hint{transition:none!important}body.one #panels{grid-template-columns:1fr}body.one #panels>*:nth-child(2){display:none}</style></head><body class="intro"><script>if(/[?&](view=3d|go|mode=compare)/.test(location.search)){document.body.classList.remove('intro');document.body.classList.add('v3')}</script><script>onerror=function(m,u,l){document.body.insertAdjacentHTML("afterbegin","<div style=\"background:#5a1d18;color:#fff;padding:10px 16px;position:relative;z-index:99\">Something went wrong: "+m+" (line "+l+"). Please send this message to the developer.</div>")}</script>
 <div id="fade"></div>
 <section class="hero">
 <canvas id="pov"></canvas>
@@ -210,9 +210,9 @@ function render(k){const id=$('s'+k).value,S=SITES.find(s=>s.id===id),cu=id==='c
  const R=(l,v)=>`<div class="m"><span>${l}</span><b>${v}</b></div>`,mA=mask(hz,o.sA[i]),mE=mask(hz,o.eA[i]);
  const M={sunNow:o.sE[i].toFixed(1)+'°',sunT:'Sun '+timer(o.sO,i,'sets','rises'),earT:'Earth '+timer(o.eO,i,'sets','rises'),sp:pct(o.sO),ep:pct(o.eO),dk:longest(o.sO,false),gp:longest(o.eO,false)};
  SER[k].M=M;
- $('m'+k).innerHTML=R('Sun height',M.sunNow)+R('Timer',M.sunT.replace('sets in','sunset in').replace('rises in','sunrise in'))+R('Timer',M.earT.replace('sets in','Earthset in').replace('rises in','Earthrise in'))
-  +R('Sunny share of 30 days',M.sp.toFixed(0)+'%')+R('Earth-in-view share',M.ep.toFixed(0)+'%')+R('Longest night',fd(M.dk))+R('Longest no-signal gap',fd(M.gp))
-  +(expert?R('Sun compass direction',o.sA[i].toFixed(0)+'°')+R('Skyline in Sun direction',mA.toFixed(2)+'°')+R('Sun above skyline by',(o.sE[i]+o.f[i].sr-mA).toFixed(2)+'°')+R('Earth height / skyline',o.eE[i].toFixed(2)+'° / '+mE.toFixed(2)+'°')+R('Earth disc / Sun disc',(2*o.f[i].er).toFixed(2)+'° / '+(2*o.f[i].sr).toFixed(2)+'°'):'');
+ $('m'+k).innerHTML=R('Solar elevation angle',M.sunNow)+TL(R,M.sunT,'sunset','sunrise')+TL(R,M.earT,'Earthset','Earthrise')
+  +R('Duration of sunlight (30 days)',M.sp.toFixed(0)+'%')+R('Earth visibility window (30 days)',M.ep.toFixed(0)+'%')+R('Longest period without sunlight',fd(M.dk))+R('Longest period without Earth visibility',fd(M.gp))
+  +(expert?R('Sun azimuth (compass direction)',o.sA[i].toFixed(0)+'°')+R('Skyline in Sun direction',mA.toFixed(2)+'°')+R('Solar elevation above skyline',(o.sE[i]+o.f[i].sr-mA).toFixed(2)+'°')+R('Earth elevation / skyline',o.eE[i].toFixed(2)+'° / '+mE.toFixed(2)+'°')+R('Earth disc / Sun disc',(2*o.f[i].er).toFixed(2)+'° / '+(2*o.f[i].sr).toFixed(2)+'°'):'');
  pano(k,hz,o,i);tline(k,o,i);PS[k]={lat,lon};orr[k].upd(o,i,lat,lon,PS[k==='A'?'B':'A'])}
 function ymax(o){return Math.max(12,Math.min(90,Math.ceil(Math.max(...o.sE,...o.eE))+3))}
 const CEN={},FOV=120;
@@ -232,10 +232,13 @@ function tline(k,o,i){const c=$('tl'+k),F=fitCanvas(c,680,190);if(!F)return;cons
  [[o.sO,'#ffc94a',H-26],[o.eO,'#5aa2ff',H-14]].forEach(([a,col,y])=>{g.fillStyle='#161b27';g.fillRect(0,y,W,9);g.fillStyle=col;a.forEach((v,j)=>{if(v)g.fillRect(X(j),y,Math.ceil(W/N),9)})});
  g.fillStyle='#fff';g.fillRect(X(i)-1,0,2,H);g.fillStyle='#a89a78';g.font='12px Outfit,sans-serif';for(let d=0;d<=30;d+=5)g.fillText('day '+d,Math.min(X(d*24),W-40),12);
  if(!c.dataset.on){c.dataset.on=1;c.addEventListener('click',e=>{const r=c.getBoundingClientRect();$('h'+k).value=Math.max(0,Math.min(N-1,Math.round((e.clientX-r.left)/r.width*N)));if($('link').checked&&k==='A')$('hB').value=$('hA').value;all()})}}
+function TL(R,T,dn,up){const m=T.match(/(sets|rises) in (.*)$/),x=T.match(/at least (.*)$/);
+ if(m)return R('Time before '+(m[1]==='sets'?dn:up),m[2]);
+ if(x)return R('Time before '+(/stays up/.test(T)?dn:up),'more than '+x[1]);return R('Time before '+dn,'—')}
 let PVIS=false,PSTALE=false;const pv=()=>{const r=$('panels').getBoundingClientRect();return r.bottom>0&&r.top<innerHeight};
 let stT=0;addEventListener('scroll',()=>{if(!PSTALE||stT)return;stT=setTimeout(()=>{stT=0;if(pv()){PSTALE=false;all()}},120)},{passive:true});
 function all(){PVIS=pv();if(PVIS)PSTALE=false;render('A');if(CMP)render('B');upd();const A=SER.A,B=SER.B;if(!PVIS||!A||!B||!A.M||!B.M)return;const a=A.M,b=B.M,r=(l,x,y,f)=>`<tr><td>${l}</td><td>${f(x)}</td><td>${f(y)}</td></tr>`;
- $('cmp').innerHTML=`<table><tr><th></th><th>Site A</th><th>Site B</th></tr>`+r('Sun height now',a.sunNow,b.sunNow,x=>x)+r('Sunny share',a.sp,b.sp,x=>x.toFixed(0)+'%')+r('Earth-in-view share',a.ep,b.ep,x=>x.toFixed(0)+'%')+r('Longest night',a.dk,b.dk,fd)+r('Longest no-signal gap',a.gp,b.gp,fd)+`</table><p class="cap">${a.sp+a.ep>b.sp+b.ep?'Site A':a.sp+a.ep<b.sp+b.ep?'Site B':'Neither site'} has the better combined power-and-signal score in these 30 days.</p>`}
+ $('cmp').innerHTML=`<table><tr><th></th><th>Site A</th><th>Site B</th></tr>`+r('Solar elevation angle now',a.sunNow,b.sunNow,x=>x)+r('Duration of sunlight (30 days)',a.sp,b.sp,x=>x.toFixed(0)+'%')+r('Earth visibility window (30 days)',a.ep,b.ep,x=>x.toFixed(0)+'%')+r('Longest period without sunlight',a.dk,b.dk,fd)+r('Longest period without Earth visibility',a.gp,b.gp,fd)+`</table><p class="cap">${a.sp+a.ep>b.sp+b.ep?'Site A':a.sp+a.ep<b.sp+b.ep?'Site B':'Neither site'} has the better combined power-and-signal score in these 30 days.</p>`}
 $('mode').onclick=()=>{expert=!expert;$('mode').innerHTML=expert?'<b>Show simple numbers</b><small>Go back to easy words</small>':'<b>Show expert numbers</b><small>See the detailed science numbers</small>';all()};
 $('site').innerHTML=SITES.map(s=>`<option value="${s.id}">${s.n}</option>`).join('');$('slider').max=N-1;
 $('note').innerHTML='<b>How it works.</b> Sun and Earth positions come from the astronomy-engine ephemeris (JPL-family accuracy, about 1 arcminute) rotated into the Moon\'s own frame with the IAU 2009 pole and libration. Sunset uses the Sun\'s upper edge; Earthset uses Earth\'s center. There is no air on the Moon, so no refraction is applied. Terrain skylines are computed in your browser for any coordinates from LOLA topography (files made by <code>build_dem.py</code>, whole Moon plus a finer south-pole map): for each of 360 directions it looks out up to 200 km and keeps the highest angle, including the Moon\'s curved edge. Sites marked "placeholder" use invented skylines and are not for real planning. Validate against NASA Quickmap, Moon Trek and JPL Horizons.';
